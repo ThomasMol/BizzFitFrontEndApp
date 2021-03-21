@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../api.dart';
-import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../main_layout.dart';
 
@@ -61,17 +60,16 @@ class _LoginPageState extends State<StatefulWidget> {
       'email': _emailController.text,
       'password': _passwordController.text
     };
-    var res = await CallApi().postData(data, '/auth/login');
-    var body = json.decode(res.body);
-    print(body['status']);
-    if (body['status'] == 'Success') {
+    var response = await CallApi().postRequest(data, '/auth/login');
+    if (response['status'] == 'Success') {
       FlutterSecureStorage storage = FlutterSecureStorage();
-      await storage.write(key: 'access_token', value: body['data']['token']);
-
-      Navigator.of(context, rootNavigator: true).push<void>(CupertinoPageRoute(
+      await storage.write(
+          key: 'access_token', value: response['data']['token']);
+      Navigator.of(context, rootNavigator: true)
+          .pushReplacement(CupertinoPageRoute(
         builder: (context) => HomeScreen(),
       ));
-    } else if(body['status'] == 'Error') {
+    } else if (response['status'] == 'Error') {
       //TODO Handle status is error
 
     } else {

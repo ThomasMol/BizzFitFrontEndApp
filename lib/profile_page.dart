@@ -1,6 +1,9 @@
+import 'package:buzzfit/authentication/login_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'api.dart';
 import 'dart:convert';
+import 'authentication/login_page.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class Profile extends StatefulWidget {
   static const title = 'Profile';
@@ -11,6 +14,8 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  FlutterSecureStorage storage = FlutterSecureStorage();
+
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
@@ -18,14 +23,36 @@ class _ProfileState extends State<Profile> {
         child: SafeArea(
           child: Padding(
               padding: EdgeInsets.all(30),
-              child: CupertinoButton(
-                  child: Text('Test'), onPressed: _retrieveProfileData)),
+              child:
+                  CupertinoButton(child: Text('Logout'), onPressed: _logOut)),
         ));
   }
 
   void _retrieveProfileData() async {
-    var res = await CallApi().getData(null, '/user');
-    print(res);
-    return null;
+    var res = await CallApi().getRequest(null, '/user');
+    return res;
+  }
+
+  void _logOut() async {
+    var response = await CallApi().postRequest(null, '/auth/logout');
+
+    if (response['status'] == 'Success') {
+      await storage.delete(key: 'access_token');
+
+      Navigator.pushAndRemoveUntil(
+        context,
+        CupertinoPageRoute(builder: (context) => LoginPage()),
+        (Route<dynamic> route) => false
+        );
+      
+
+    } else if (response['status'] == 'Error') {
+      //TODO Handle status is error
+
+    } else {
+      // Handle when there is no error or no success (probably when server is not online or something)
+    }
+
+    return response['data']['message'];
   }
 }

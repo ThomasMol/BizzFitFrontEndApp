@@ -1,11 +1,9 @@
 import 'package:flutter/cupertino.dart';
-
 import 'tabs/activity_tab.dart';
 import 'tabs/insights_tab.dart';
 import 'tabs/ranking_tab.dart';
 import 'tabs/shop_tab.dart';
 import 'tabs/social_tab.dart';
-
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -14,8 +12,12 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    
     return CupertinoTabScaffold(
       tabBar: CupertinoTabBar(
         items: [
@@ -74,6 +76,6 @@ class _HomeScreenState extends State<HomeScreen> {
             return SizedBox.shrink();
         }
       },
-    ); 
+    );
   }
 }
