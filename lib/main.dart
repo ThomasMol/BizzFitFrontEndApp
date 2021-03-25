@@ -13,7 +13,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
   // Set to false when login system works
   bool _isLoggedIn = false;
 
@@ -40,8 +39,8 @@ class _MyAppState extends State<MyApp> {
     return CupertinoApp(
         home: _isLoggedIn ? HomeScreen() : LoginPage(),
         title: 'BizzFit',
-        theme: CupertinoThemeData(
-            primaryColor: CupertinoColors.activeOrange,
-            primaryContrastingColor: CupertinoColors.activeBlue));
+        theme: CupertinoThemeData(           
+            textTheme: CupertinoTextThemeData(
+                primaryColor: CupertinoColors.systemBlue)));
   }
 }

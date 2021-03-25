@@ -7,7 +7,7 @@ class CallApi {
   FlutterSecureStorage storage = FlutterSecureStorage();
 
   postRequest(data, apiUrl) async {
-    Uri fullUrl = Uri.http(_url, '/api' + apiUrl, data);
+    Uri fullUrl = Uri.http(_url, '/api' + apiUrl);
     final response = await http.post(fullUrl,
         body: jsonEncode(data), headers: await _setHeaders());
     final responseJson = jsonDecode(response.body);

@@ -10,8 +10,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<StatefulWidget> {
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
+  TextEditingController _emailTextController = TextEditingController();
+  TextEditingController _passwordTextController = TextEditingController();
   bool _isLoading = false;
 
   @override
@@ -31,21 +31,22 @@ class _LoginPageState extends State<StatefulWidget> {
         Padding(
             padding: EdgeInsets.symmetric(vertical: 10, horizontal: 50),
             child: CupertinoTextField(
-              controller: _emailController,
+              controller: _emailTextController,
+              keyboardType: TextInputType.emailAddress,
               placeholder: 'Email',
             )),
         Padding(
             padding: EdgeInsets.symmetric(vertical: 10, horizontal: 50),
             child: CupertinoTextField(
               obscureText: true,
-              controller: _passwordController,
+              controller: _passwordTextController,
               placeholder: 'Password',
             )),
         Padding(
             padding: EdgeInsets.symmetric(vertical: 5, horizontal: 50),
             child: _isLoading
                 ? CupertinoActivityIndicator()
-                : CupertinoButton(
+                : CupertinoButton.filled(
                     child: Text('Login'), onPressed: _handleLogin)),
       ],
     )));
@@ -57,8 +58,8 @@ class _LoginPageState extends State<StatefulWidget> {
     });
 
     var data = {
-      'email': _emailController.text,
-      'password': _passwordController.text
+      'email': _emailTextController.text,
+      'password': _passwordTextController.text
     };
     var response = await CallApi().postRequest(data, '/auth/login');
     if (response['status'] == 'Success') {

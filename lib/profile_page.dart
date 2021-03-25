@@ -40,12 +40,9 @@ class _ProfileState extends State<Profile> {
       await storage.delete(key: 'access_token');
 
       Navigator.pushAndRemoveUntil(
-        context,
-        CupertinoPageRoute(builder: (context) => LoginPage()),
-        (Route<dynamic> route) => false
-        );
-      
-
+          context,
+          CupertinoPageRoute(builder: (context) => LoginPage()),
+          (Route<dynamic> route) => false);
     } else if (response['status'] == 'Error') {
       //TODO Handle status is error
 
