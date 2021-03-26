@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../api.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../main_layout.dart';
+import '../widgets.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -63,6 +64,7 @@ class _LoginPageState extends State<StatefulWidget> {
     };
     var response = await CallApi().postRequest(data, '/auth/login');
     if (response['status'] == 'Success') {
+      CustomWidgets.showMessage('Succesfully logged in!', context);
       FlutterSecureStorage storage = FlutterSecureStorage();
       await storage.write(
           key: 'access_token', value: response['data']['token']);
@@ -71,8 +73,7 @@ class _LoginPageState extends State<StatefulWidget> {
         builder: (context) => HomeScreen(),
       ));
     } else if (response['status'] == 'Error') {
-      //TODO Handle status is error
-
+      CustomWidgets.showMessage(response['message'], context);
     } else {
       // Handle when there is no error or no success (probably when server is not online or something)
     }

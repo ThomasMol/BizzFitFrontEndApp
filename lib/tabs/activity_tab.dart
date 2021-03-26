@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../navigation_bar.dart';
 import '../activities/create_physical_activity_page.dart';
 import '../api.dart';
-import '../models/physicalactivity_model.dart';
+import '../widgets.dart';
 
 class ActivityTab extends StatefulWidget {
   static const title = 'Activity';
@@ -24,7 +24,7 @@ class _ActivityTabState extends State<ActivityTab> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(
+        child: Scaffold(
       body: FutureBuilder<List<dynamic>>(
           future: futurePhysicalAcitivty,
           builder: (context, snapshot) {
@@ -43,9 +43,7 @@ class _ActivityTabState extends State<ActivityTab> {
                     )
                   ],
                 );
-              },
-              childCount: snapshot.data.length
-              ));
+              }, childCount: snapshot.data.length));
             } else {
               newsListSliver = SliverToBoxAdapter(
                 child: CircularProgressIndicator(),
@@ -73,12 +71,12 @@ class _ActivityTabState extends State<ActivityTab> {
                             Navigator.pop(context);
                             _openAddNewActivityPage();
                           }),
-                      /* CupertinoActionSheetAction(
+                      CupertinoActionSheetAction(
                         child: const Text('Add mental state'),
                         onPressed: () {
-                          Navigator.pop(context);
+                          CustomWidgets.showMessage('test', context);
                         },
-                      ) */
+                      )
                     ],
                   ));
         },
@@ -102,7 +100,6 @@ class _ActivityTabState extends State<ActivityTab> {
   Future<List<dynamic>> fetchPhysicalActivities() async {
     var response = await CallApi().getRequest(null, '/physicalactivities');
     if (response['status'] == 'Success') {
-      print(response);
       return response['data'];
     } else if (response['status'] == 'Error') {
       //TODO Handle status is error

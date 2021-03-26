@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import '../navigation_bar.dart';
+import '../widgets.dart';
 
 
 class SocialTab extends StatefulWidget {
@@ -17,7 +18,7 @@ class _SocialTabState extends State<SocialTab> {
       slivers: [
         NavigationBar(),
         CupertinoSliverRefreshControl(
-            //onRefresh: _refreshData,
+           // onRefresh: CustomWidgets.showMessage(context,'test'),
             ),
         /* SliverSafeArea(
           top: false,
