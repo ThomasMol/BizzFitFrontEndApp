@@ -31,14 +31,14 @@ class _LoginPageState extends State<StatefulWidget> {
             child: Text('Login to BizzFit')),
         Padding(
             padding: EdgeInsets.symmetric(vertical: 10, horizontal: 50),
-            child: CupertinoTextField(
+            child: CupertinoTextField.borderless(
               controller: _emailTextController,
               keyboardType: TextInputType.emailAddress,
               placeholder: 'Email',
             )),
         Padding(
             padding: EdgeInsets.symmetric(vertical: 10, horizontal: 50),
-            child: CupertinoTextField(
+            child: CupertinoTextField.borderless(
               obscureText: true,
               controller: _passwordTextController,
               placeholder: 'Password',

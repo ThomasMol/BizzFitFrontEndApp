@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../navigation_bar.dart';
 import '../activities/create_physical_activity_page.dart';
+import '../activities/create_mental_state_page.dart';
 import '../api.dart';
 import '../widgets.dart';
 
@@ -69,12 +70,26 @@ class _ActivityTabState extends State<ActivityTab> {
                           child: const Text('Add physical activity'),
                           onPressed: () {
                             Navigator.pop(context);
-                            _openAddNewActivityPage();
+                            Navigator.of(context, rootNavigator: true)
+                                .push<void>(
+                              CupertinoPageRoute(
+                                title: CreatePhysicalActivity.title,
+                                fullscreenDialog: true,
+                                builder: (context) => CreatePhysicalActivity(),
+                              ),
+                            );
                           }),
                       CupertinoActionSheetAction(
                         child: const Text('Add mental state'),
                         onPressed: () {
-                          CustomWidgets.showMessage('test', context);
+                          Navigator.pop(context);
+                          Navigator.of(context, rootNavigator: true).push<void>(
+                            CupertinoPageRoute(
+                              title: CreateMentalState.title,
+                              fullscreenDialog: true,
+                              builder: (context) => CreateMentalState(),
+                            ),
+                          );
                         },
                       )
                     ],
@@ -85,17 +100,7 @@ class _ActivityTabState extends State<ActivityTab> {
         backgroundColor: CupertinoColors.activeOrange,
       ),
     ));
-  }
-
-  void _openAddNewActivityPage() {
-    Navigator.of(context, rootNavigator: true).push<void>(
-      CupertinoPageRoute(
-        title: CreatePhysicalActivity.title,
-        fullscreenDialog: true,
-        builder: (context) => CreatePhysicalActivity(),
-      ),
-    );
-  }
+  }  
 
   Future<List<dynamic>> fetchPhysicalActivities() async {
     var response = await CallApi().getRequest(null, '/physicalactivities');

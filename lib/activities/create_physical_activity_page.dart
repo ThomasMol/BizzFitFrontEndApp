@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import '../api.dart';
 
 class CreatePhysicalActivity extends StatefulWidget {
@@ -18,7 +19,6 @@ class _CreatePhysicalActivityState extends State<CreatePhysicalActivity> {
     'Walking',
     'Weightlifting',
   ];
-
   bool _isLoading = false;
 
   @override
@@ -26,23 +26,33 @@ class _CreatePhysicalActivityState extends State<CreatePhysicalActivity> {
     return CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(),
         child: SafeArea(
-            child: Center(
-                child: Column(
+            child: Material(
+                child: Form(
+                    child: Column(
           children: [
-            CupertinoButton(
-              child: Text(
-                  'Selected activity type: ' + picker_values[_typePickerValue]),
-              onPressed: () => _showTypePicker(context),
+            ListTile(
+              leading: const Icon(CupertinoIcons.sportscourt_fill),
+              title: const Text('Type'),
+              trailing: Text(picker_values[_typePickerValue]),
+              onTap: () => _showTypePicker(context),
             ),
-            CupertinoButton(
-              child: Text(
-                  'Time spent on activity: ' + _timePickerValue.toString()),
-              onPressed: () => _showTimePicker(context),
+            const Divider(
+              height: 1.0,
             ),
-            CupertinoButton(
-              child:
-                  Text('Date of activity: ' + _datePickerValue.day.toString()),
-              onPressed: () => _showDatePicker(context),
+            ListTile(
+              leading: const Icon(CupertinoIcons.timer_fill),
+              title: const Text('Activity time'),
+              trailing: Text(_timePickerValue.toString()),
+              onTap: () => _showTimePicker(context),
+            ),
+            const Divider(
+              height: 1.0,
+            ),
+            ListTile(
+              leading: const Icon(CupertinoIcons.calendar_today),
+              title: const Text('Date and time'),
+              trailing: Text(_datePickerValue.toString()),
+              onTap: () => _showDatePicker(context),
             ),
             _isLoading
                 ? CupertinoActivityIndicator()
@@ -54,7 +64,7 @@ class _CreatePhysicalActivityState extends State<CreatePhysicalActivity> {
                     },
                   ),
           ],
-        ))));
+        )))));
   }
 
   void _showTypePicker(BuildContext context) {

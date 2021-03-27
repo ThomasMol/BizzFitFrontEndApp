@@ -39,7 +39,8 @@ class _MyAppState extends State<MyApp> {
     return CupertinoApp(
         home: _isLoggedIn ? HomeScreen() : LoginPage(),
         title: 'BizzFit',
-        theme: CupertinoThemeData(           
+        theme: CupertinoThemeData(       
+          primaryColor: CupertinoColors.activeOrange,    
             textTheme: CupertinoTextThemeData(
                 primaryColor: CupertinoColors.systemBlue)));
   }
