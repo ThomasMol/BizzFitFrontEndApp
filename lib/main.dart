@@ -1,4 +1,4 @@
-import 'package:buzzfit/authentication/login_page.dart';
+import 'package:bizzfit/authentication/login_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'main_layout.dart';

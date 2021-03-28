@@ -4,6 +4,7 @@ import 'profile_page.dart';
 class NavigationBar extends StatelessWidget {
   const NavigationBar({
     Key key,
+    String title,
   }) : super(key: key);
 
   @override

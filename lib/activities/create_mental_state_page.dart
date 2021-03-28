@@ -52,7 +52,7 @@ class _CreateMentalStateState extends State<CreateMentalState> {
                 : CupertinoButton.filled(
                     child: Text('Save'),
                     onPressed: () {
-                      _saveMentalState();
+                       _saveMentalState();
                       Navigator.pop(context);
                     },
                   ),
