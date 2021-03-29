@@ -8,7 +8,7 @@ import '../widgets.dart';
 
 class ActivityTab extends StatefulWidget {
   static const title = 'Activity';
-  static const icon = Icon(CupertinoIcons.sportscourt_fill);
+  static const icon = Icon(CupertinoIcons.chart_bar_square_fill);
 
   @override
   _ActivityTabState createState() => _ActivityTabState();
@@ -16,44 +16,69 @@ class ActivityTab extends StatefulWidget {
 
 class _ActivityTabState extends State<ActivityTab> {
   Future<List<dynamic>> futurePhysicalAcitivty;
+  Future<List<dynamic>> futureMentalState;
+
   @override
   void initState() {
     super.initState();
     futurePhysicalAcitivty = fetchPhysicalActivities();
+    futureMentalState = fetchMentalState();
   }
 
   @override
   Widget build(BuildContext context) {
+    final physicalActivityBuilder = FutureBuilder<List<dynamic>>(
+        future: futurePhysicalAcitivty,
+        builder: (context, snapshot) {
+          Widget newsListSliver;
+          if (snapshot.hasData) {
+            newsListSliver = SliverList(
+                delegate: SliverChildBuilderDelegate((context, index) {
+              return ListTile(
+                title: Text(snapshot.data[index]['type'].toString()),
+                subtitle: Text(snapshot.data[index]['time_seconds'].toString()),
+                trailing: Text(snapshot.data[index]['date_time'].toString()),
+              );
+            }, childCount: snapshot.data.length));
+          } else {
+            newsListSliver = SliverToBoxAdapter(
+              child: CupertinoActivityIndicator(),
+            );
+          }
+          return newsListSliver;         
+        });
+  final mentalStateBuilder = FutureBuilder<List<dynamic>>(
+        future: futureMentalState,
+        builder: (context, snapshot) {
+          Widget newsListSliver;
+          if (snapshot.hasData) {
+            newsListSliver = SliverList(
+                delegate: SliverChildBuilderDelegate((context, index) {
+              return ListTile(
+                title: Text(snapshot.data[index]['state'].toString()),
+                trailing: Text(snapshot.data[index]['date_time'].toString()),
+              );
+            }, childCount: snapshot.data.length));
+          } else {
+            newsListSliver = SliverToBoxAdapter(
+              child: CupertinoActivityIndicator(),
+            );
+          }
+          return newsListSliver;         
+        });
+
     return SafeArea(
         child: Scaffold(
-      body: FutureBuilder<List<dynamic>>(
-          future: futurePhysicalAcitivty,
-          builder: (context, snapshot) {
-            Widget newsListSliver;
-            if (snapshot.hasData) {
-              newsListSliver = SliverList(
-                  delegate: SliverChildBuilderDelegate((context, index) {
-                return Column(
-                  children: <Widget>[
-                    ListTile(
-                      title: Text(snapshot.data[index]['type'].toString()),
-                      subtitle:
-                          Text(snapshot.data[index]['time_seconds'].toString()),
-                      trailing:
-                          Text(snapshot.data[index]['date_time'].toString()),
-                    )
-                  ],
-                );
-              }, childCount: snapshot.data.length));
-            } else {
-              newsListSliver = SliverToBoxAdapter(
-                child: CircularProgressIndicator(),
-              );
-            }
-            return CustomScrollView(
-              slivers: [NavigationBar(), newsListSliver],
-            );
+      body: CustomScrollView(
+        slivers: [
+          NavigationBar(),
+          CupertinoSliverRefreshControl(onRefresh: () async {
+            reloadData();
           }),
+          physicalActivityBuilder,
+          mentalStateBuilder
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showCupertinoModalPopup(
@@ -100,10 +125,28 @@ class _ActivityTabState extends State<ActivityTab> {
         backgroundColor: CupertinoColors.activeOrange,
       ),
     ));
-  }  
+  }
+
+  void reloadData() {
+    setState(() {
+      futurePhysicalAcitivty = fetchPhysicalActivities();
+      futureMentalState = fetchMentalState();
+    });
+  }
 
   Future<List<dynamic>> fetchPhysicalActivities() async {
     var response = await CallApi().getRequest(null, '/physicalactivities');
+    if (response['status'] == 'Success') {
+      return response['data'];
+    } else if (response['status'] == 'Error') {
+      //TODO Handle status is error
+
+    } else {
+      // Handle when there is no error or no success (probably when server is not online or something)
+    }
+  }
+  Future<List<dynamic>> fetchMentalState() async {
+    var response = await CallApi().getRequest(null, '/mentalstates');
     if (response['status'] == 'Success') {
       return response['data'];
     } else if (response['status'] == 'Error') {

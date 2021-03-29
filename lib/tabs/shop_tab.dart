@@ -3,7 +3,7 @@ import '../navigation_bar.dart';
 
 class ShopTab extends StatefulWidget {
   static const title = 'Shop';
-  static const icon = Icon(CupertinoIcons.cart_fill);
+  static const icon = Icon(CupertinoIcons.gift_fill);
 
   @override
   _ShopTabState createState() => _ShopTabState();

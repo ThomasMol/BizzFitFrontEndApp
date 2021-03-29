@@ -13,7 +13,7 @@ class CustomWidgets {
           return Flash.dialog(
             controller: controller,
             alignment: const Alignment(0, 1),
-            margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
+            margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 55.0),
             borderRadius: const BorderRadius.all(Radius.circular(5.0)),
             enableDrag: false,
             backgroundColor: Colors.black87,
