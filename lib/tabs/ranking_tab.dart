@@ -13,26 +13,54 @@ class RankingTab extends StatefulWidget {
 }
 
 class _RankingTabState extends State<RankingTab> {
-  Future<List<dynamic>> futureRanking;
+  Future<List<dynamic>> futureOrganizationRanking;
+  Future<List<dynamic>> futureInOrganizationRanking;
+  Future<int> futureMyRanking;
+  Future<int> futureMyOrganizationRanking;
 
   @override
   void initState() {
     super.initState();
-    futureRanking = fetchOrganizationRanking();
+    futureOrganizationRanking = fetchOrganizationRanking();
+    futureInOrganizationRanking = fetchInOrganizationRanking();
+    futureMyRanking = fetchMyRanking();
+    futureMyOrganizationRanking = fetchMyOrganizationRanking();
   }
 
   Future<List<dynamic>> fetchOrganizationRanking() async {
-    var response = await CallApi().getRequest(null, '/toptenranking');
+    var response = await CallApi().getRequest(null, '/ranking/topten');
     if (response['status'] == 'Success') {
+      return response['data'];
+    }
+  }
+
+  Future<List<dynamic>> fetchInOrganizationRanking() async {
+    var response = await CallApi().getRequest(null, '/ranking/myorganization');
+    if (response['status'] == 'Success') {
+      return response['data'];
+    }
+  }
+
+  Future<int> fetchMyRanking() async {
+    var response = await CallApi().getRequest(null, '/ranking/myranking');
+    if (response['status'] == 'Success') {      
+      return response['data'];
+    }
+  }
+  Future<int> fetchMyOrganizationRanking() async {
+    var response = await CallApi().getRequest(null, '/ranking/myorganizationranking');
+    if (response['status'] == 'Success') {      
       return response['data'];
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final rankingBuilder = FutureBuilder<List<dynamic>>(
-        future: futureRanking,
-        builder: (context, snapshot) {
+
+    // Top ten of organizations builder
+    final builderOrganizationRanking = FutureBuilder<List<dynamic>>(
+        future: Future.wait([futureOrganizationRanking, futureMyOrganizationRanking]),
+        builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {          
           Widget newsListSliver;
           if (snapshot.hasData) {
             newsListSliver = SliverList(
@@ -40,10 +68,11 @@ class _RankingTabState extends State<RankingTab> {
               int position = index + 1;
               return ListTile(
                 leading: Text(position.toString()),
-                title: Text(snapshot.data[index]['name']),
-                trailing: Text(snapshot.data[index]['score'].toString()),
+                title: Text(snapshot.data[0][index]['name']),
+                trailing: Text(snapshot.data[0][index]['score'].toString()),
+                subtitle: snapshot.data[1] == position ?  Text('Your organization is here!') : null
               );
-            }, childCount: snapshot.data.length));
+            }, childCount: snapshot.data[0].length));
           } else {
             newsListSliver = SliverToBoxAdapter(
               child: CupertinoActivityIndicator(),
@@ -52,6 +81,31 @@ class _RankingTabState extends State<RankingTab> {
           return newsListSliver;
         });
 
+    // Top ten of users within organization builder
+    final builderInOrganizationRanking = FutureBuilder<List<dynamic>>(
+        future: Future.wait([futureInOrganizationRanking, futureMyRanking]),
+        builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {          
+          Widget newsListSliver;
+          if (snapshot.hasData) {            
+            newsListSliver = SliverList(
+                delegate: SliverChildBuilderDelegate((context, index) {
+              int position = index + 1;
+              return ListTile(
+                leading: Text(position.toString()),
+                title: Text(snapshot.data[0][index]['first_name']),
+                trailing: Text(snapshot.data[0][index]['score'].toString()),
+                subtitle: snapshot.data[1] == position ?  Text('You are here!') : null
+              );
+            }, childCount: snapshot.data[0].length));
+          } else {
+            newsListSliver = SliverToBoxAdapter(
+              child: CupertinoActivityIndicator(),
+            );
+          }
+          return newsListSliver;
+        });
+
+    // Create scaffolding
     return SafeArea(
         child: Scaffold(
             body: CustomScrollView(
@@ -60,14 +114,20 @@ class _RankingTabState extends State<RankingTab> {
         CupertinoSliverRefreshControl(onRefresh: () async {
           reloadData();
         }),
-        rankingBuilder
+        SliverToBoxAdapter(child: Text('Top organizations')),        
+        builderOrganizationRanking,
+        SliverToBoxAdapter(child: Text('Your rankings')),
+        builderInOrganizationRanking
       ],
     )));
   }
 
   void reloadData() {
     setState(() {
-      futureRanking = fetchOrganizationRanking();
+      futureOrganizationRanking = fetchOrganizationRanking();
+      futureInOrganizationRanking = fetchInOrganizationRanking();
+      futureMyRanking = fetchMyRanking();
+      futureMyOrganizationRanking = fetchMyOrganizationRanking();
     });
   }
 }

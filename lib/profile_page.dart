@@ -24,54 +24,61 @@ class _ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
+    final builderProfile = FutureBuilder<dynamic>(
+        future: futureProfile,
+        builder: (context, snapshot) {
+          Widget newsListSliver;
+          if (snapshot.hasData) {
+            newsListSliver = Column(children: [
+              Image(
+                image: AssetImage('assets/profile.png'),
+                height: 120,
+              ),
+              Padding(padding: EdgeInsets.symmetric(vertical: 10)),
+              Text(snapshot.data['first_name'] +
+                  ' ' +
+                  snapshot.data['last_name']),
+              Padding(padding: EdgeInsets.symmetric(vertical: 20)),
+              const Divider(
+                height: 1.0,
+              ),
+              ListTile(
+                title: Text('Org name here'),
+                trailing: Text('Organization'),
+              ),
+              const Divider(
+                height: 1.0,
+              ),
+             
+            ]);
+          } else {
+            newsListSliver = Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          return newsListSliver;
+        });
+
     return CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(),
         child: SafeArea(
-            child: Scaffold(
-                body: FutureBuilder<dynamic>(
-                    future: futureProfile,
-                    builder: (context, snapshot) {
-                      Widget newsListSliver;
-                      if (snapshot.hasData) {
-                        newsListSliver = Column(children: [
-                          Image(
-                            image: AssetImage('assets/profile.png'),
-                            height: 120,
-                          ),
-                          Padding(padding: EdgeInsets.symmetric(vertical: 10)),
-                          Text(snapshot.data['first_name'] +
-                              ' ' +
-                              snapshot.data['last_name']),
-                          Padding(padding: EdgeInsets.symmetric(vertical: 20)),
-                          const Divider(
-                            height: 1.0,
-                          ),
-                          ListTile(
-                            title: Text('Org name here'),
-                            trailing: Text('Organization'),
-                          ),
-                          const Divider(
-                            height: 1.0,
-                          ),
-                          Spacer(),
-                          const Divider(
-                            height: 1.0,
-                          ),
-                          ListTile(
-                            title: Text('Logout'),
-                            onTap: _logOut,
-                          ),
-                          const Divider(
-                            height: 1.0,
-                          ),
-                        ]);
-                      } else {
-                        newsListSliver = Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      }
-                      return newsListSliver;
-                    }))));
+            child: Material(
+                child: Column(
+          children: [
+            /* CupertinoSliverRefreshControl(onRefresh: () async {
+          reloadData();
+        }), */
+            builderProfile,
+            Spacer(),
+            ListTile(
+              title: Text('Logout'),
+              onTap: _logOut,
+            ),
+            const Divider(
+              height: 1.0,
+            ),
+          ],
+        ))));
   }
 
   Future<dynamic> fetchProfile() async {

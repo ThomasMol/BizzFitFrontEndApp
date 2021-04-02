@@ -139,7 +139,7 @@ class _ActivityTabState extends State<ActivityTab> {
     if (response['status'] == 'Success') {
       return response['data'];
     } else if (response['status'] == 'Error') {
-      //TODO Handle status is error
+      // TODO Handle status is error
 
     } else {
       // Handle when there is no error or no success (probably when server is not online or something)
