@@ -43,35 +43,38 @@ class _RankingTabState extends State<RankingTab> {
 
   Future<int> fetchMyRanking() async {
     var response = await CallApi().getRequest(null, '/ranking/myranking');
-    if (response['status'] == 'Success') {      
+    if (response['status'] == 'Success') {
       return response['data'];
     }
   }
+
   Future<int> fetchMyOrganizationRanking() async {
-    var response = await CallApi().getRequest(null, '/ranking/myorganizationranking');
-    if (response['status'] == 'Success') {      
+    var response =
+        await CallApi().getRequest(null, '/ranking/myorganizationranking');
+    if (response['status'] == 'Success') {
       return response['data'];
     }
   }
 
   @override
   Widget build(BuildContext context) {
-
     // Top ten of organizations builder
     final builderOrganizationRanking = FutureBuilder<List<dynamic>>(
-        future: Future.wait([futureOrganizationRanking, futureMyOrganizationRanking]),
-        builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {          
+        future: Future.wait(
+            [futureOrganizationRanking, futureMyOrganizationRanking]),
+        builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {
           Widget newsListSliver;
           if (snapshot.hasData) {
             newsListSliver = SliverList(
                 delegate: SliverChildBuilderDelegate((context, index) {
               int position = index + 1;
               return ListTile(
-                leading: Text(position.toString()),
-                title: Text(snapshot.data[0][index]['name']),
-                trailing: Text(snapshot.data[0][index]['score'].toString()),
-                subtitle: snapshot.data[1] == position ?  Text('Your organization is here!') : null
-              );
+                  leading: Text(position.toString()),
+                  title: Text(snapshot.data[0][index]['name']),
+                  trailing: Text(snapshot.data[0][index]['score'].toString()),
+                  subtitle: snapshot.data[1] == position
+                      ? Text('Your organization is here!')
+                      : null);
             }, childCount: snapshot.data[0].length));
           } else {
             newsListSliver = SliverToBoxAdapter(
@@ -84,18 +87,19 @@ class _RankingTabState extends State<RankingTab> {
     // Top ten of users within organization builder
     final builderInOrganizationRanking = FutureBuilder<List<dynamic>>(
         future: Future.wait([futureInOrganizationRanking, futureMyRanking]),
-        builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {          
+        builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {
           Widget newsListSliver;
-          if (snapshot.hasData) {            
+          if (snapshot.hasData) {
             newsListSliver = SliverList(
                 delegate: SliverChildBuilderDelegate((context, index) {
               int position = index + 1;
               return ListTile(
-                leading: Text(position.toString()),
-                title: Text(snapshot.data[0][index]['first_name']),
-                trailing: Text(snapshot.data[0][index]['score'].toString()),
-                subtitle: snapshot.data[1] == position ?  Text('You are here!') : null
-              );
+                  leading: Text(position.toString()),
+                  title: Text(snapshot.data[0][index]['first_name']),
+                  trailing: Text(snapshot.data[0][index]['score'].toString()),
+                  subtitle: snapshot.data[1] == position
+                      ? Text('You are here!')
+                      : null);
             }, childCount: snapshot.data[0].length));
           } else {
             newsListSliver = SliverToBoxAdapter(
@@ -114,9 +118,21 @@ class _RankingTabState extends State<RankingTab> {
         CupertinoSliverRefreshControl(onRefresh: () async {
           reloadData();
         }),
-        SliverToBoxAdapter(child: Text('Top organizations')),        
+        SliverToBoxAdapter(
+            child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                child: Text(
+                  'Top organizations',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ))),
         builderOrganizationRanking,
-        SliverToBoxAdapter(child: Text('Your rankings')),
+        SliverToBoxAdapter(
+            child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                child: Text(
+                  'Your rankings',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ))),
         builderInOrganizationRanking
       ],
     )));

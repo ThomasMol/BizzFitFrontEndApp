@@ -32,7 +32,7 @@ class _SocialTabState extends State<SocialTab> {
           SizedBox(height: 5),
           Text(subtitle, style: TextStyle(fontSize: 14, color: Colors.black54))
         ]),
-        margin: EdgeInsets.symmetric(horizontal: 15, vertical: 20));
+        margin: EdgeInsets.symmetric(horizontal: 15, vertical: 30));
   }
 
   Widget fullImageCard(AssetImage image, String title, String subtitle) {
