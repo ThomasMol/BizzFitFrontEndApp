@@ -14,6 +14,63 @@ class SocialTab extends StatefulWidget {
 class _SocialTabState extends State<SocialTab> {
   TextEditingController _textController;
 
+  Widget sideScrollCard(AssetImage image, String title, String subtitle) {
+    return Card(
+        elevation: 2,
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+        child: Column(children: [
+          Image(
+            image: image,
+            height: 100,
+          ),
+          SizedBox(height: 15),
+          Text(
+            title,
+            style: TextStyle(fontSize: 18),
+          ),
+          SizedBox(height: 5),
+          Text(subtitle, style: TextStyle(fontSize: 14, color: Colors.black54))
+        ]),
+        margin: EdgeInsets.symmetric(horizontal: 15, vertical: 20));
+  }
+
+  Widget fullImageCard(AssetImage image, String title, String subtitle) {
+    return Card(
+        elevation: 2,
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+        child: Stack(children: [
+          Image(
+            image: image,
+            width: MediaQuery.of(context).size.width,
+          ),
+          Padding(
+              padding: EdgeInsets.fromLTRB(20, 170, 20, 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                        fontSize: 30,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 5),
+                  Text(subtitle,
+                      style: TextStyle(
+                          fontSize: 22,
+                          color: Colors.white70,
+                          fontWeight: FontWeight.bold))
+                ],
+              ))
+        ]),
+        margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20));
+  }
+
   @override
   Widget build(BuildContext context) {
     return CustomScrollView(
@@ -72,7 +129,40 @@ class _SocialTabState extends State<SocialTab> {
                                 )
                               ]))),
                   SizedBox(height: 30),
-                  Container(child: Text('test')),
+                  Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                      child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text('Popular near you',
+                              textAlign: TextAlign.left,
+                              style: TextStyle(fontSize: 18)))),
+                  Container(
+                      height: 230,
+                      width: MediaQuery.of(context).size.width,
+                      child: ListView(
+                        scrollDirection: Axis.horizontal,
+                        children: <Widget>[
+                          sideScrollCard(AssetImage('assets/running.jpg'),
+                              "Running", 'Beach run'),
+                          sideScrollCard(AssetImage('assets/hiking.jpg'),
+                              "Hiking", 'Veluwe'),
+                          sideScrollCard(
+                              AssetImage('assets/yoga.jpg'), "Yoga", 'At home')
+                        ],
+                      )),
+                  SizedBox(height: 20),
+                  Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                      child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text('Featured Activities',
+                              textAlign: TextAlign.left,
+                              style: TextStyle(fontSize: 18)))),
+                  fullImageCard(AssetImage('assets/yoga_2.jpg'), "Yoga", 'Beginner level'),
+                  fullImageCard(AssetImage('assets/meditation.jpg'), "Meditation", 'Low intensity'),
+                  fullImageCard(AssetImage('assets/weightlifting.jpg'), "Weightlifting", 'High intensity'),
                 ]));
               },
               childCount: 1,
