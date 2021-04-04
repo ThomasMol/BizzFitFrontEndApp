@@ -7,6 +7,7 @@ class PhysicalActivity {
   PhysicalActivity({this.points, this.type, this.time, this.dateTime});
 
   factory PhysicalActivity.fromJson(Map<String, dynamic> json) {
+    
     return PhysicalActivity(
       points: json['points'],
       type: json['type'],
