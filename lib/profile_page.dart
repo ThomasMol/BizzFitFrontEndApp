@@ -91,10 +91,10 @@ class _ProfileState extends State<Profile> {
   }
 
   void _logOut() async {
+    FlutterSecureStorage storage = FlutterSecureStorage();
+    await storage.delete(key: 'access_token');
     var response = await CallApi().postRequest(null, '/auth/logout');
-    if (response['status'] == 'Success') {
-      FlutterSecureStorage storage = FlutterSecureStorage();
-      await storage.delete(key: 'access_token');
+      if (response['status'] == 'Success') {     
       Navigator.pushAndRemoveUntil(
           context,
           CupertinoPageRoute(builder: (context) => LoginPage()),
