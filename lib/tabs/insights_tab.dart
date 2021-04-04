@@ -15,6 +15,13 @@ class InsightsTab extends StatefulWidget {
 
 class _InsightsTabState extends State<InsightsTab> {
   Future<dynamic> futureInsights;
+  List<Icon> moodIcons = [
+    Icon(Icons.sentiment_very_dissatisfied, color: Colors.red),
+    Icon(Icons.sentiment_dissatisfied, color: Colors.orange),
+    new Icon(Icons.sentiment_neutral, color: Colors.cyan),
+    Icon(Icons.sentiment_satisfied, color: Colors.lightGreen),
+    Icon(Icons.sentiment_very_satisfied, color: Colors.green)
+  ];
 
   @override
   void initState() {
@@ -25,6 +32,7 @@ class _InsightsTabState extends State<InsightsTab> {
   Future fetchFutureInsights() async {
     var response = await CallApi().getRequest(null, '/insights/mentalstate');
     if (response['status'] == 'Success') {
+      print(response['data']);
       return response['data'];
     }
   }
@@ -37,11 +45,48 @@ class _InsightsTabState extends State<InsightsTab> {
           Widget newsListSliver;
           if (snapshot.hasData) {
             newsListSliver = SliverToBoxAdapter(
-                child: Column(
-              children: [
-                Text(snapshot.data['average_mental_month'].toString()),
-              ],
-            ));
+                child: Padding(
+                    padding: EdgeInsets.fromLTRB(10, 20, 10, 10),
+                    child: Column(children: [
+                      Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'Today',
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          )),
+                      SizedBox(height: 10),
+                      Card(
+                          child: ListTile(
+                        leading:
+                            moodIcons[snapshot.data['average_mental_today']],
+                        title: Text(
+                            snapshot.data['average_mental_today'].toString()),
+                        trailing: Text('Average mood'),
+                      )),
+                      SizedBox(height: 40),
+                      Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'Last 7 days',
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          )),
+                      SizedBox(height: 10),
+                      Card(
+                          child: ListTile(
+                        leading:
+                            moodIcons[snapshot.data['average_mental_week']],
+                        title: Text(
+                            snapshot.data['average_mental_week'].toString()),
+                        trailing: Text('Average mood'),
+                      )),
+                      SizedBox(height: 10),
+                    ])));
           } else {
             newsListSliver = SliverToBoxAdapter(
               child: CupertinoActivityIndicator(),
