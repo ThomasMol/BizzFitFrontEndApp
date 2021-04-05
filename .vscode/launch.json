@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "buzzfit",
+            "name": "bizzfit",
             "request": "launch",
             "type": "dart"
         }

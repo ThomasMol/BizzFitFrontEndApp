@@ -17,6 +17,13 @@ class ActivityTab extends StatefulWidget {
 class _ActivityTabState extends State<ActivityTab> {
   Future<List<dynamic>> futurePhysicalAcitivty;
   Future<List<dynamic>> futureMentalState;
+  List<Icon> moodIcons = [
+    Icon(Icons.sentiment_very_dissatisfied, color: Colors.deepOrange, size: 42),
+    Icon(Icons.sentiment_dissatisfied, color: Colors.orange, size: 42),
+    Icon(Icons.sentiment_neutral, color: Colors.blueGrey, size: 42),
+    Icon(Icons.sentiment_satisfied, color: Colors.green, size: 42),
+    Icon(Icons.sentiment_very_satisfied, color: Colors.lightGreen, size: 42)
+  ];
 
   @override
   void initState() {
@@ -55,7 +62,7 @@ class _ActivityTabState extends State<ActivityTab> {
             newsListSliver = SliverList(
                 delegate: SliverChildBuilderDelegate((context, index) {
               return ListTile(
-                title: Text(snapshot.data[index]['state'].toString()),
+                title: moodIcons[snapshot.data[index]['state']],
                 trailing: Text(snapshot.data[index]['date_time'].toString()),
               );
             }, childCount: snapshot.data.length));

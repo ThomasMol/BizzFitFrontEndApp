@@ -16,11 +16,11 @@ class InsightsTab extends StatefulWidget {
 class _InsightsTabState extends State<InsightsTab> {
   Future<dynamic> futureInsights;
   List<Icon> moodIcons = [
-    Icon(Icons.sentiment_very_dissatisfied, color: Colors.red),
-    Icon(Icons.sentiment_dissatisfied, color: Colors.orange),
-    new Icon(Icons.sentiment_neutral, color: Colors.cyan),
-    Icon(Icons.sentiment_satisfied, color: Colors.lightGreen),
-    Icon(Icons.sentiment_very_satisfied, color: Colors.green)
+    Icon(Icons.sentiment_very_dissatisfied, color: Colors.deepOrange, size: 42),
+    Icon(Icons.sentiment_dissatisfied, color: Colors.orange, size: 42),
+    Icon(Icons.sentiment_neutral, color: Colors.blueGrey, size: 42),
+    Icon(Icons.sentiment_satisfied, color: Colors.green, size: 42),
+    Icon(Icons.sentiment_very_satisfied, color: Colors.lightGreen, size: 42)
   ];
 
   @override
@@ -59,13 +59,18 @@ class _InsightsTabState extends State<InsightsTab> {
                           )),
                       SizedBox(height: 10),
                       Card(
-                          child: ListTile(
-                        leading:
-                            moodIcons[snapshot.data['average_mental_today']],
-                        title: Text(
-                            snapshot.data['average_mental_today'].toString()),
-                        trailing: Text('Average mood'),
-                      )),
+                          child: Column(children: [
+                        ListTile(
+                          trailing:
+                              moodIcons[snapshot.data['average_mental_today']],
+                        title: Text('Average mood'),
+                        ),
+                        ListTile(
+                          trailing:
+                              Text(snapshot.data['average_physical_today'].toString()),
+                          title: Text('Average physical activity points gained'),
+                        ),
+                      ])),
                       SizedBox(height: 40),
                       Align(
                           alignment: Alignment.centerLeft,
