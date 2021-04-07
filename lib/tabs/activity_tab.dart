@@ -28,6 +28,7 @@ class _ActivityTabState extends State<ActivityTab> {
     Icon(Icons.sentiment_satisfied, color: Colors.green, size: 42),
     Icon(Icons.sentiment_very_satisfied, color: Colors.lightGreen, size: 42)
   ];
+  List<String> moods = ['Awful', 'Bad', 'Neutral', 'Good', 'Amazing'];
 
   List<String> weekDates;
   List<String> weekDatesDisplay;
@@ -53,6 +54,7 @@ class _ActivityTabState extends State<ActivityTab> {
                 delegate: SliverChildBuilderDelegate((context, index) {
               Widget mentalStateList;
               Widget physicalActivityList;
+              Widget dateDisplay;
 
               if (snapshot.data[0][weekDates[index]] != null) {
                 mentalStateList = ListView.builder(
@@ -61,14 +63,19 @@ class _ActivityTabState extends State<ActivityTab> {
                     shrinkWrap: true,
                     itemCount: snapshot.data[0][weekDates[index]].length,
                     itemBuilder: (BuildContext context, int listViewIndex) {
+                      var data =
+                          snapshot.data[0][weekDates[index]][listViewIndex];
+                      DateTime dateTime = DateTime.parse(data['date_time']);
+                      String time = DateFormat('H:mm').format(dateTime);
                       return ListTile(
-                        title: Text(snapshot.data[0][weekDates[index]]
-                                [listViewIndex]['state']
-                            .toString()),
-                      );
+                          leading: moodIcons[data['state']],
+                          title: Text(moods[data['state']]),
+                          subtitle: Text('Your mood'),
+                          trailing: Text(time));
                     });
               } else {
-                mentalStateList = Text('No mental state data for this day');
+                mentalStateList =
+                    ListTile(subtitle: Text('No mood data for this day'));
               }
 
               if (snapshot.data[1][weekDates[index]] != null) {
@@ -78,23 +85,42 @@ class _ActivityTabState extends State<ActivityTab> {
                     shrinkWrap: true,
                     itemCount: snapshot.data[1][weekDates[index]].length,
                     itemBuilder: (BuildContext context, int listViewIndex) {
+                      var data =
+                          snapshot.data[1][weekDates[index]][listViewIndex];
+                      Duration activityTime = Duration(seconds: data['time_seconds']);
+                      DateTime dateTime = DateTime.parse(data['date_time']);
+                      String time = DateFormat('H:mm').format(dateTime);
                       return ListTile(
-                        title: Text(snapshot.data[1][weekDates[index]]
-                            [listViewIndex]['type']),
+                        title: Text(data['type']),
+                        subtitle: Text("Time spent: " + activityTime.toString().split('.').first.padLeft(8, "0")),
+                        trailing: Text(time)
                       );
                     });
               } else {
-                physicalActivityList =
-                    Text('No physical activity data for this day');
+                physicalActivityList = ListTile(
+                    subtitle: Text('No physical activity data for this day'));
               }
 
-              return Column(
-                children: [
-                  Text(weekDatesDisplay[index]),
-                  mentalStateList,
-                  physicalActivityList
-                ],
+              dateDisplay = ListTile(
+                leading: Text(weekDatesDisplay[index]),
+                trailing: Icon(CupertinoIcons.time),
               );
+
+              return Card(
+                  margin: EdgeInsets.all(10),
+                  child: Column(
+                    children: [
+                      dateDisplay,
+                      const Divider(
+                        height: 1,
+                      ),
+                      mentalStateList,
+                      const Divider(
+                        height: 1,
+                      ),
+                      physicalActivityList
+                    ],
+                  ));
             }, childCount: weekDates.length));
           } else {
             newsListSliver = SliverToBoxAdapter(
@@ -113,7 +139,7 @@ class _ActivityTabState extends State<ActivityTab> {
           NavigationBar(),
           CupertinoSliverRefreshControl(onRefresh: () async {
             reloadData();
-          }),          
+          }),
           activityWeekBuilder
         ],
       ),
