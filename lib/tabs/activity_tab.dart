@@ -1,9 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../navigation_bar.dart';
 import '../activities/create_physical_activity_page.dart';
 import '../activities/create_mental_state_page.dart';
 import '../api.dart';
+import 'package:intl/intl.dart';
+
 import '../widgets.dart';
 
 class ActivityTab extends StatefulWidget {
@@ -15,8 +19,8 @@ class ActivityTab extends StatefulWidget {
 }
 
 class _ActivityTabState extends State<ActivityTab> {
-  Future<List<dynamic>> futurePhysicalAcitivty;
-  Future<List<dynamic>> futureMentalState;
+  Future<List<dynamic>> futureActivityWeek;
+
   List<Icon> moodIcons = [
     Icon(Icons.sentiment_very_dissatisfied, color: Colors.deepOrange, size: 42),
     Icon(Icons.sentiment_dissatisfied, color: Colors.orange, size: 42),
@@ -25,53 +29,81 @@ class _ActivityTabState extends State<ActivityTab> {
     Icon(Icons.sentiment_very_satisfied, color: Colors.lightGreen, size: 42)
   ];
 
+  List<String> weekDates;
+  List<String> weekDatesDisplay;
+
   @override
   void initState() {
     super.initState();
-    futurePhysicalAcitivty = fetchPhysicalActivities();
-    futureMentalState = fetchMentalState();
+
+    futureActivityWeek = fetchActivitiesWeek();
+
+    weekDates = generateListDates('yyyy-MM-dd', 5);
+    weekDatesDisplay = generateListDates('E d MMMM', 5);
   }
 
   @override
   Widget build(BuildContext context) {
-    final physicalActivityBuilder = FutureBuilder<List<dynamic>>(
-        future: futurePhysicalAcitivty,
+    final activityWeekBuilder = FutureBuilder<List<dynamic>>(
+        future: futureActivityWeek,
         builder: (context, snapshot) {
           Widget newsListSliver;
           if (snapshot.hasData) {
             newsListSliver = SliverList(
                 delegate: SliverChildBuilderDelegate((context, index) {
-              return ListTile(
-                title: Text(snapshot.data[index]['type'].toString()),
-                subtitle: Text(snapshot.data[index]['time_seconds'].toString()),
-                trailing: Text(snapshot.data[index]['date_time'].toString()),
+              Widget mentalStateList;
+              Widget physicalActivityList;
+
+              if (snapshot.data[0][weekDates[index]] != null) {
+                mentalStateList = ListView.builder(
+                    physics: NeverScrollableScrollPhysics(),
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    itemCount: snapshot.data[0][weekDates[index]].length,
+                    itemBuilder: (BuildContext context, int listViewIndex) {
+                      return ListTile(
+                        title: Text(snapshot.data[0][weekDates[index]]
+                                [listViewIndex]['state']
+                            .toString()),
+                      );
+                    });
+              } else {
+                mentalStateList = Text('No mental state data for this day');
+              }
+
+              if (snapshot.data[1][weekDates[index]] != null) {
+                physicalActivityList = ListView.builder(
+                    physics: NeverScrollableScrollPhysics(),
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    itemCount: snapshot.data[1][weekDates[index]].length,
+                    itemBuilder: (BuildContext context, int listViewIndex) {
+                      return ListTile(
+                        title: Text(snapshot.data[1][weekDates[index]]
+                            [listViewIndex]['type']),
+                      );
+                    });
+              } else {
+                physicalActivityList =
+                    Text('No physical activity data for this day');
+              }
+
+              return Column(
+                children: [
+                  Text(weekDatesDisplay[index]),
+                  mentalStateList,
+                  physicalActivityList
+                ],
               );
-            }, childCount: snapshot.data.length));
+            }, childCount: weekDates.length));
           } else {
             newsListSliver = SliverToBoxAdapter(
-              child: CupertinoActivityIndicator(),
+              child: ListTile(
+                title: Text("No data for today!"),
+              ),
             );
           }
-          return newsListSliver;         
-        });
-  final mentalStateBuilder = FutureBuilder<List<dynamic>>(
-        future: futureMentalState,
-        builder: (context, snapshot) {
-          Widget newsListSliver;
-          if (snapshot.hasData) {
-            newsListSliver = SliverList(
-                delegate: SliverChildBuilderDelegate((context, index) {
-              return ListTile(
-                title: moodIcons[snapshot.data[index]['state']],
-                trailing: Text(snapshot.data[index]['date_time'].toString()),
-              );
-            }, childCount: snapshot.data.length));
-          } else {
-            newsListSliver = SliverToBoxAdapter(
-              child: CupertinoActivityIndicator(),
-            );
-          }
-          return newsListSliver;         
+          return newsListSliver;
         });
 
     return SafeArea(
@@ -81,9 +113,8 @@ class _ActivityTabState extends State<ActivityTab> {
           NavigationBar(),
           CupertinoSliverRefreshControl(onRefresh: () async {
             reloadData();
-          }),
-          physicalActivityBuilder,
-          mentalStateBuilder
+          }),          
+          activityWeekBuilder
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -136,31 +167,30 @@ class _ActivityTabState extends State<ActivityTab> {
 
   void reloadData() {
     setState(() {
-      futurePhysicalAcitivty = fetchPhysicalActivities();
-      futureMentalState = fetchMentalState();
+      futureActivityWeek = fetchActivitiesWeek();
+      weekDates = generateListDates('yyyy-MM-dd', 5);
+      weekDatesDisplay = generateListDates('E d MMMM', 5);
     });
   }
 
-  Future<List<dynamic>> fetchPhysicalActivities() async {
-    var response = await CallApi().getRequest(null, '/physicalactivities');
-    if (response['status'] == 'Success') {
-      return response['data'];
-    } else if (response['status'] == 'Error') {
-      // TODO Handle status is error
-
-    } else {
-      // Handle when there is no error or no success (probably when server is not online or something)
-    }
+  List<String> generateListDates(String format, int length) {
+    return List<String>.generate(length, (i) {
+      DateTime dateTime = DateTime.utc(
+        DateTime.now().year,
+        DateTime.now().month,
+        DateTime.now().day,
+      ).subtract(Duration(days: i));
+      String formattedDateTime = DateFormat(format).format(dateTime);
+      return formattedDateTime;
+    });
   }
-  Future<List<dynamic>> fetchMentalState() async {
-    var response = await CallApi().getRequest(null, '/mentalstates');
+
+  Future<List<dynamic>> fetchActivitiesWeek() async {
+    var response = await CallApi().getRequest(null, '/activities/week');
     if (response['status'] == 'Success') {
       return response['data'];
-    } else if (response['status'] == 'Error') {
-      //TODO Handle status is error
-
     } else {
-      // Handle when there is no error or no success (probably when server is not online or something)
+      return response['message'];
     }
   }
 }
