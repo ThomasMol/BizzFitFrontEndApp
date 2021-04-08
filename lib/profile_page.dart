@@ -94,6 +94,7 @@ class _ProfileState extends State<Profile> {
     FlutterSecureStorage storage = FlutterSecureStorage();    
     var response = await CallApi().postRequest(null, '/auth/logout');
     await storage.delete(key: 'access_token');
+    await storage.delete(key: 'permission_level');
       if (response['status'] == 'Success') {     
       Navigator.pushAndRemoveUntil(
           context,

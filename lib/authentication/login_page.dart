@@ -26,19 +26,22 @@ class _LoginPageState extends State<StatefulWidget> {
         child: Center(
             child: ListView(
       children: <Widget>[
+        SizedBox(height: 100,),
+        Align(alignment: Alignment.center,
+            child:  Text('BizzFit',style: TextStyle(fontStyle: FontStyle.italic, fontSize: 40),)),
         Padding(
-            padding: EdgeInsets.fromLTRB(50, 100, 50, 20),
-            child: Text('Login to BizzFit')),
+            padding: EdgeInsets.fromLTRB(50, 50, 50, 10),
+            child: Text('Login with your credentials')),
         Padding(
             padding: EdgeInsets.symmetric(vertical: 10, horizontal: 50),
-            child: CupertinoTextField.borderless(
+            child: CupertinoTextField(
               controller: _emailTextController,
               keyboardType: TextInputType.emailAddress,
               placeholder: 'Email',
             )),
         Padding(
             padding: EdgeInsets.symmetric(vertical: 10, horizontal: 50),
-            child: CupertinoTextField.borderless(
+            child: CupertinoTextField(
               obscureText: true,
               controller: _passwordTextController,
               placeholder: 'Password',
@@ -66,8 +69,9 @@ class _LoginPageState extends State<StatefulWidget> {
     if (response['status'] == 'Success') {
       CustomWidgets.showMessage('Succesfully logged in!', context);
       FlutterSecureStorage storage = FlutterSecureStorage();
-      await storage.write(
-          key: 'access_token', value: response['data']['token']);
+      await storage.write( key: 'access_token', value: response['data']['token']);
+      await storage.write( key: 'permission_level', value: response['data']['user_permission_level'].toString());
+
       Navigator.of(context, rootNavigator: true)
           .pushReplacement(CupertinoPageRoute(
         builder: (context) => HomeScreen(),
