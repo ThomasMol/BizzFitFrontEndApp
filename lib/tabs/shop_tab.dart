@@ -211,6 +211,9 @@ class _ShopTabState extends State<ShopTab> {
     return CustomScrollView(
       slivers: [
         NavigationBar(),
+        CupertinoSliverRefreshControl(onRefresh: () async {
+          reloadData();
+        }),
         SliverSafeArea(
           top: false,
           sliver: builderShop,
@@ -226,5 +229,11 @@ class _ShopTabState extends State<ShopTab> {
     } else if (response['status'] == 'Error') {
       CustomWidgets.showMessage(response['message'], context);
     }
+  }
+
+  void reloadData() {
+    setState(() {
+      futureProfile = fetchProfile();
+    });
   }
 }
