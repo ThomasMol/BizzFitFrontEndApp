@@ -40,20 +40,37 @@ class _ProfileState extends State<Profile> {
                   snapshot.data['last_name']),
               Padding(padding: EdgeInsets.symmetric(vertical: 20)),
               const Divider(
-                height: 1.0,
+                height: 2.0,
               ),
               ListTile(
-                title: Text('Org name here'),
-                trailing: Text('Organization'),
+                leading: Icon(CupertinoIcons.list_number),
+                title: Text(snapshot.data['score'].toString()),
+                subtitle: Text('points'),
               ),
               const Divider(
-                height: 1.0,
+                height: 2.0,
+              ),
+              ListTile(
+                leading: Icon(CupertinoIcons.briefcase_fill),
+                title: Text(snapshot.data['org_name']),
+                subtitle: Text('Organization'),
+              ),
+              const Divider(
+                height: 2.0,
+              ),
+              ListTile(
+                leading: Icon(CupertinoIcons.list_number),
+                title: Text(snapshot.data['org_score'].toString()),
+                subtitle: Text('Your organization\'s score'),
+              ),
+              const Divider(
+                height: 2.0,
               ),
              
             ]);
           } else {
             newsListSliver = Center(
-              child: CircularProgressIndicator(),
+              child: CupertinoActivityIndicator(),
             );
           }
           return newsListSliver;
@@ -64,10 +81,7 @@ class _ProfileState extends State<Profile> {
         child: SafeArea(
             child: Material(
                 child: Column(
-          children: [
-            /* CupertinoSliverRefreshControl(onRefresh: () async {
-          reloadData();
-        }), */
+          children: [             
             builderProfile,
             Spacer(),
             ListTile(
@@ -75,7 +89,7 @@ class _ProfileState extends State<Profile> {
               onTap: _logOut,
             ),
             const Divider(
-              height: 1.0,
+              height: 2.0,
             ),
           ],
         ))));
@@ -88,6 +102,12 @@ class _ProfileState extends State<Profile> {
     } else if (response['status'] == 'Error') {
       CustomWidgets.showMessage(response['message'], context);
     }
+  }
+
+  void reloadData() {
+    setState(() {      
+      futureProfile = fetchProfile();
+    });
   }
 
   void _logOut() async {
