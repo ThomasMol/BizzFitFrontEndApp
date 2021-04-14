@@ -33,7 +33,7 @@ class _InsightsTabState extends State<InsightsTab> {
   }
 
   Future fetchFutureInsights() async {
-    var response = await CallApi().getRequest(null, '/insights/mentalstate');
+    var response = await CallApi().getRequest(null, '/insights/get');
     if (response['status'] == 'Success') {
       return response['data'];
     }
@@ -63,6 +63,10 @@ class _InsightsTabState extends State<InsightsTab> {
                       Card(
                           child: Column(children: [
                         ListTile(
+                            subtitle:
+                                moodCounts(snapshot.data['grouped_today']),
+                            leading: Text('Moods')),
+                        ListTile(
                           leading:
                               moodIcons[snapshot.data['average_mental_today']],
                           title: Text(
@@ -70,8 +74,13 @@ class _InsightsTabState extends State<InsightsTab> {
                           subtitle: Text('Average mood'),
                         ),
                         ListTile(
-                          leading: Text(snapshot.data['average_physical_today'].toString(), style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                          title: Text('Average physical activity points gained'),
+                          leading: Text(
+                              snapshot.data['average_physical_today']
+                                  .toString(),
+                              style: TextStyle(
+                                  fontSize: 24, fontWeight: FontWeight.bold)),
+                          title:
+                              Text('Average physical activity points gained'),
                         ),
                       ])),
                       SizedBox(height: 40),
@@ -85,18 +94,25 @@ class _InsightsTabState extends State<InsightsTab> {
                             ),
                           )),
                       SizedBox(height: 10),
-                       Card(
+                      Card(
                           child: Column(children: [
+                        ListTile(
+                            subtitle: moodCounts(snapshot.data['grouped_week']),
+                            leading: Text('Moods')),
                         ListTile(
                           leading:
                               moodIcons[snapshot.data['average_mental_week']],
-                          title: Text(
-                              moods[snapshot.data['average_mental_week']]),
+                          title:
+                              Text(moods[snapshot.data['average_mental_week']]),
                           subtitle: Text('Average mood'),
                         ),
                         ListTile(
-                          leading: Text(snapshot.data['average_physical_week'].toString(), style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                          title: Text('Average physical activity points gained'),
+                          leading: Text(
+                              snapshot.data['average_physical_week'].toString(),
+                              style: TextStyle(
+                                  fontSize: 24, fontWeight: FontWeight.bold)),
+                          title:
+                              Text('Average physical activity points gained'),
                         ),
                       ])),
                       SizedBox(height: 40),
@@ -110,8 +126,12 @@ class _InsightsTabState extends State<InsightsTab> {
                             ),
                           )),
                       SizedBox(height: 10),
-                       Card(
+                      Card(
                           child: Column(children: [
+                        ListTile(
+                            subtitle:
+                                moodCounts(snapshot.data['grouped_month']),
+                            leading: Text('Moods')),
                         ListTile(
                           leading:
                               moodIcons[snapshot.data['average_mental_month']],
@@ -120,8 +140,13 @@ class _InsightsTabState extends State<InsightsTab> {
                           subtitle: Text('Average mood'),
                         ),
                         ListTile(
-                          leading: Text(snapshot.data['average_physical_month'].toString(), style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                          title: Text('Average physical activity points gained'),
+                          leading: Text(
+                              snapshot.data['average_physical_month']
+                                  .toString(),
+                              style: TextStyle(
+                                  fontSize: 24, fontWeight: FontWeight.bold)),
+                          title:
+                              Text('Average physical activity points gained'),
                         ),
                       ])),
                     ])));
@@ -152,5 +177,19 @@ class _InsightsTabState extends State<InsightsTab> {
     setState(() {
       futureInsights = fetchFutureInsights();
     });
+  }
+
+  Widget moodCounts(dynamic data) {
+    List<Widget> moodItems = [];
+    for (var item in data) {
+      Widget column = Column(
+          children: [moodIcons[item['state']], Text(item['total'].toString())]);
+      moodItems.add(column);
+    }
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: moodItems,
+    );
   }
 }

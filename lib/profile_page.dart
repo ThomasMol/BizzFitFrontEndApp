@@ -66,6 +66,31 @@ class _ProfileState extends State<Profile> {
               const Divider(
                 height: 2.0,
               ),
+              ListTile(
+                leading: Icon(Icons.api),
+                title: Text('Connect with your Strava account'),
+                trailing: Icon(CupertinoIcons.chevron_forward),
+              ),
+              const Divider(
+                height: 2.0,
+              ),
+              ListTile(
+                leading: Icon(Icons.api),
+                title: Text('Connect with your Fitbit account'),
+                trailing: Icon(CupertinoIcons.chevron_forward),
+              ),
+              const Divider(
+                height: 2.0,
+              ),
+              ListTile(
+                leading: Icon(Icons.api),
+                title: Text('Connect with your Nike Run Club account'),
+                trailing: Icon(CupertinoIcons.chevron_forward),
+              ),
+              const Divider(
+                height: 2.0,
+              ),
+              
              
             ]);
           } else {
