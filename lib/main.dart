@@ -41,8 +41,7 @@ class _MyAppState extends State<MyApp> {
                 theme: CupertinoThemeData(
                     primaryColor: CupertinoColors.activeOrange,
                     textTheme: CupertinoTextThemeData(
-                        primaryColor: CupertinoColors.systemBlue)));
-            
+                        primaryColor: CupertinoColors.systemBlue)));            
           } else {
            return CupertinoApp(
               home: Scaffold(

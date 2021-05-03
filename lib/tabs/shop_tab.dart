@@ -1,5 +1,5 @@
 import 'package:bizzfit/api.dart';
-import 'package:bizzfit/widgets.dart';
+import 'package:bizzfit/utils.dart';
 import 'package:flutter/cupertino.dart';
 import '../navigation_bar.dart';
 import 'package:flutter/material.dart';
@@ -227,7 +227,7 @@ class _ShopTabState extends State<ShopTab> {
     if (response['status'] == 'Success') {
       return response['data'];
     } else if (response['status'] == 'Error') {
-      CustomWidgets.showMessage(response['message'], context);
+      Utils.showMessage(response['message'], context);
     }
   }
 

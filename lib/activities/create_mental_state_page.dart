@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../widgets.dart';
+import '../utils.dart';
 import '../api.dart';
 
 class CreateMentalState extends StatefulWidget {
@@ -122,7 +122,7 @@ class _CreateMentalStateState extends State<CreateMentalState> {
     };
     var response = await CallApi().postRequest(data, '/mentalstates/');
     if (response['status'] == 'Success') {
-      CustomWidgets.showMessage('Activity successfully saved!', context);
+      Utils.showMessage('Activity successfully saved!', context);
       Navigator.pop(context);
     } else if (response['status'] == 'Error') {
       //TODO Handle status is error

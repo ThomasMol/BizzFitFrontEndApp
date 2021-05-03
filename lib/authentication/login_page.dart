@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../api.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../main_layout.dart';
-import '../widgets.dart';
+import '../utils.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -26,9 +26,15 @@ class _LoginPageState extends State<StatefulWidget> {
         child: Center(
             child: ListView(
       children: <Widget>[
-        SizedBox(height: 100,),
-        Align(alignment: Alignment.center,
-            child:  Text('BizzFit',style: TextStyle(fontStyle: FontStyle.italic, fontSize: 40),)),
+        SizedBox(
+          height: 100,
+        ),
+        Align(
+            alignment: Alignment.center,
+            child: Text(
+              'BizzFit',
+              style: TextStyle(fontStyle: FontStyle.italic, fontSize: 40),
+            )),
         Padding(
             padding: EdgeInsets.fromLTRB(50, 50, 50, 10),
             child: Text('Login with your credentials')),
@@ -67,17 +73,20 @@ class _LoginPageState extends State<StatefulWidget> {
     };
     var response = await CallApi().postRequest(data, '/auth/login');
     if (response['status'] == 'Success') {
-      CustomWidgets.showMessage('Succesfully logged in!', context);
+      Utils.showMessage('Succesfully logged in!', context);
       FlutterSecureStorage storage = FlutterSecureStorage();
-      await storage.write( key: 'access_token', value: response['data']['token']);
-      await storage.write( key: 'permission_level', value: response['data']['user_permission_level'].toString());
+      await storage.write(
+          key: 'access_token', value: response['data']['token']);
+      await storage.write(
+          key: 'permission_level',
+          value: response['data']['user_permission_level'].toString());
 
       Navigator.of(context, rootNavigator: true)
           .pushReplacement(CupertinoPageRoute(
         builder: (context) => HomeScreen(),
       ));
     } else if (response['status'] == 'Error') {
-      CustomWidgets.showMessage(response['message'], context);
+      Utils.showMessage(response['message'], context);
     } else {
       // Handle when there is no error or no success (probably when server is not online or something)
     }

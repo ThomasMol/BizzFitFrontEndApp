@@ -1,4 +1,4 @@
-import 'package:bizzfit/widgets.dart';
+import 'package:bizzfit/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../api.dart';
@@ -60,7 +60,7 @@ class _CreatePhysicalActivityState extends State<CreatePhysicalActivity> {
                 : CupertinoButton.filled(
                     child: Text('Save activity'),
                     onPressed: () {
-                      _saveActivity();                      
+                      _saveActivity();
                     },
                   ),
           ],
@@ -137,7 +137,7 @@ class _CreatePhysicalActivityState extends State<CreatePhysicalActivity> {
     };
     var response = await CallApi().postRequest(data, '/physicalactivities/');
     if (response['status'] == 'Success') {
-      CustomWidgets.showMessage('Activity successfully saved!', context);
+      Utils.showMessage('Activity successfully saved!', context);
       Navigator.pop(context);
     } else if (response['status'] == 'Error') {
       //TODO Handle status is error

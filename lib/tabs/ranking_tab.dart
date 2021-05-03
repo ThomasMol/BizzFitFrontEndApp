@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../navigation_bar.dart';
 import '../api.dart';
-import '../widgets.dart';
+import '../utils.dart';
 
 class RankingTab extends StatefulWidget {
   static const title = 'Ranking';

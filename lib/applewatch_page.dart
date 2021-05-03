@@ -2,7 +2,7 @@ import 'package:bizzfit/tabs/shop_tab.dart';
 import 'package:flutter/cupertino.dart';
 import 'navigation_bar.dart';
 import 'package:flutter/material.dart';
-import 'widgets.dart';
+import 'utils.dart';
 
 class AppleWatch extends StatefulWidget {
   static const title = 'Apple Watch 50% off';

@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import '../navigation_bar.dart';
 import '../api.dart';
 import 'package:flutter/material.dart';
-import '../widgets.dart';
+import '../utils.dart';
 
 class InsightsTab extends StatefulWidget {
   static const title = 'Insights';

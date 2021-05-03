@@ -8,7 +8,7 @@ import '../activities/create_mental_state_page.dart';
 import '../api.dart';
 import 'package:intl/intl.dart';
 
-import '../widgets.dart';
+import '../utils.dart';
 
 class ActivityTab extends StatefulWidget {
   static const title = 'Activity';
@@ -55,47 +55,62 @@ class _ActivityTabState extends State<ActivityTab> {
               Widget mentalStateList;
               Widget physicalActivityList;
               Widget dateDisplay;
-
-              if (snapshot.data[0][weekDates[index]] != null) {
-                mentalStateList = ListView.builder(
-                    physics: NeverScrollableScrollPhysics(),
-                    scrollDirection: Axis.vertical,
-                    shrinkWrap: true,
-                    itemCount: snapshot.data[0][weekDates[index]].length,
-                    itemBuilder: (BuildContext context, int listViewIndex) {
-                      var data =
-                          snapshot.data[0][weekDates[index]][listViewIndex];
-                      DateTime dateTime = DateTime.parse(data['date_time']);
-                      String time = DateFormat('H:mm').format(dateTime);
-                      return ListTile(
-                          leading: moodIcons[data['state']],
-                          title: Text(moods[data['state']]),
-                          subtitle: Text('Your mood'),
-                          trailing: Text(time));
-                    });
+              if (snapshot.data[0].length > 0) {
+                if (snapshot.data[0][weekDates[index]] != null) {
+                  mentalStateList = ListView.builder(
+                      physics: NeverScrollableScrollPhysics(),
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      itemCount: snapshot.data[0][weekDates[index]].length,
+                      itemBuilder: (BuildContext context, int listViewIndex) {
+                        var data =
+                            snapshot.data[0][weekDates[index]][listViewIndex];
+                        DateTime dateTime = DateTime.parse(data['date_time']);
+                        String time = DateFormat('H:mm').format(dateTime);
+                        return ListTile(
+                            leading: moodIcons[data['state']],
+                            title: Text(moods[data['state']]),
+                            subtitle: Text('Your mood'),
+                            trailing: Text(time));
+                      });
+                } else {
+                  mentalStateList =
+                      ListTile(subtitle: Text('No mood data for this day'));
+                }
               } else {
                 mentalStateList =
                     ListTile(subtitle: Text('No mood data for this day'));
               }
 
-              if (snapshot.data[1][weekDates[index]] != null) {
-                physicalActivityList = ListView.builder(
-                    physics: NeverScrollableScrollPhysics(),
-                    scrollDirection: Axis.vertical,
-                    shrinkWrap: true,
-                    itemCount: snapshot.data[1][weekDates[index]].length,
-                    itemBuilder: (BuildContext context, int listViewIndex) {
-                      var data =
-                          snapshot.data[1][weekDates[index]][listViewIndex];
-                      Duration activityTime = Duration(seconds: data['time_seconds']);
-                      DateTime dateTime = DateTime.parse(data['date_time']);
-                      String time = DateFormat('H:mm').format(dateTime);
-                      return ListTile(
-                        title: Text(data['type']),
-                        subtitle: Text("Time spent: " + activityTime.toString().split('.').first.padLeft(8, "0")),
-                        trailing: Text(time)
-                      );
-                    });
+              if (snapshot.data[1].length > 0) {
+                if (snapshot.data[1][weekDates[index]] != null &&
+                    snapshot.data[1].length > 0) {
+                  physicalActivityList = ListView.builder(
+                      physics: NeverScrollableScrollPhysics(),
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      itemCount: snapshot.data[1][weekDates[index]].length,
+                      itemBuilder: (BuildContext context, int listViewIndex) {
+                        var data =
+                            snapshot.data[1][weekDates[index]][listViewIndex];
+                        Duration activityTime =
+                            Duration(seconds: data['time_seconds']);
+                        DateTime dateTime = DateTime.parse(data['date_time']);
+                        String time = DateFormat('H:mm').format(dateTime);
+                        return ListTile(
+                            title: Text(data['type']),
+                            subtitle: Text("Time spent: " +
+                                activityTime
+                                    .toString()
+                                    .split('.')
+                                    .first
+                                    .padLeft(8, "0")),
+                            trailing: Text(time));
+                      });
+                } else {
+                  physicalActivityList = ListTile(
+                      subtitle: Text('No physical activity data for this day'));
+                }
               } else {
                 physicalActivityList = ListTile(
                     subtitle: Text('No physical activity data for this day'));

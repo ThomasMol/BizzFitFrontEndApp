@@ -1,5 +1,6 @@
 import 'package:bizzfit/authentication/login_page.dart';
-import 'package:bizzfit/widgets.dart';
+import 'package:bizzfit/tabs/physical_activity_tab.dart';
+import 'package:bizzfit/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'tabs/activity_tab.dart';
@@ -45,16 +46,6 @@ class _HomeScreenState extends State<HomeScreen> {
     return int.parse(await storage.read(key: 'permission_level'));
   }
 
-  void _logOut() async {
-    FlutterSecureStorage storage = FlutterSecureStorage();
-    await storage.delete(key: 'access_token');
-    await storage.delete(key: 'permission_level');
-    Navigator.pushAndRemoveUntil(
-        context,
-        CupertinoPageRoute(builder: (context) => LoginPage()),
-        (Route<dynamic> route) => false);
-  }
-
   Widget pageAdmin = CupertinoTabScaffold(
     tabBar: CupertinoTabBar(
       activeColor: CupertinoColors.activeOrange,
@@ -68,17 +59,17 @@ class _HomeScreenState extends State<HomeScreen> {
           icon: RankingTab.icon,
         ),
         BottomNavigationBarItem(
-          label: ActivityTab.title,
-          icon: ActivityTab.icon,
+          label: PhysicalActivityTab.title,
+          icon: PhysicalActivityTab.icon,
         ),
         BottomNavigationBarItem(
           label: InsightsTab.title,
           icon: InsightsTab.icon,
         ),
-        BottomNavigationBarItem(
+        /* BottomNavigationBarItem(
           label: ShopTab.title,
           icon: ShopTab.icon,
-        ),
+        ), */
       ],
     ),
     tabBuilder: (context, index) {
@@ -95,19 +86,19 @@ class _HomeScreenState extends State<HomeScreen> {
           );
         case 2:
           return CupertinoTabView(
-            defaultTitle: ActivityTab.title,
-            builder: (context) => ActivityTab(),
+            defaultTitle: PhysicalActivityTab.title,
+            builder: (context) => PhysicalActivityTab(),
           );
         case 3:
           return CupertinoTabView(
             defaultTitle: InsightsTab.title,
             builder: (context) => InsightsTab(),
           );
-        case 4:
+        /* case 4:
           return CupertinoTabView(
             defaultTitle: ShopTab.title,
             builder: (context) => ShopTab(),
-          );
+          ); */
 
         default:
           assert(false, 'Unexpected tab');
@@ -129,13 +120,13 @@ class _HomeScreenState extends State<HomeScreen> {
           icon: RankingTab.icon,
         ),
         BottomNavigationBarItem(
-          label: ActivityTab.title,
-          icon: ActivityTab.icon,
+          label: PhysicalActivityTab.title,
+          icon: PhysicalActivityTab.icon,
         ),
-        BottomNavigationBarItem(
+       /*  BottomNavigationBarItem(
           label: ShopTab.title,
           icon: ShopTab.icon,
-        ),
+        ), */
       ],
     ),
     tabBuilder: (context, index) {
@@ -152,14 +143,14 @@ class _HomeScreenState extends State<HomeScreen> {
           );
         case 2:
           return CupertinoTabView(
-            defaultTitle: ActivityTab.title,
-            builder: (context) => ActivityTab(),
+            defaultTitle: PhysicalActivityTab.title,
+            builder: (context) => PhysicalActivityTab(),
           );
-        case 3:
+       /*  case 3:
           return CupertinoTabView(
             defaultTitle: ShopTab.title,
             builder: (context) => ShopTab(),
-          );
+          ); */
 
         default:
           assert(false, 'Unexpected tab');

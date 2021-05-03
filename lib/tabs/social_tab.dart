@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../navigation_bar.dart';
-import '../widgets.dart';
+import '../utils.dart';
 
 class SocialTab extends StatefulWidget {
   static const title = 'Social';
@@ -77,7 +77,7 @@ class _SocialTabState extends State<SocialTab> {
       slivers: [
         NavigationBar(),
         CupertinoSliverRefreshControl(
-            // onRefresh: CustomWidgets.showMessage(context,'test'),
+            // onRefresh: Utils.showMessage(context,'test'),
             ),
         SliverSafeArea(
           top: false,
@@ -160,9 +160,12 @@ class _SocialTabState extends State<SocialTab> {
                           child: Text('Featured Activities',
                               textAlign: TextAlign.left,
                               style: TextStyle(fontSize: 18)))),
-                  fullImageCard(AssetImage('assets/yoga_2.jpg'), "Yoga", 'Beginner level'),
-                  fullImageCard(AssetImage('assets/meditation.jpg'), "Meditation", 'Low intensity'),
-                  fullImageCard(AssetImage('assets/weightlifting.jpg'), "Weightlifting", 'High intensity'),
+                  fullImageCard(AssetImage('assets/yoga_2.jpg'), "Yoga",
+                      'Beginner level'),
+                  fullImageCard(AssetImage('assets/meditation.jpg'),
+                      "Meditation", 'Low intensity'),
+                  fullImageCard(AssetImage('assets/weightlifting.jpg'),
+                      "Weightlifting", 'High intensity'),
                 ]));
               },
               childCount: 1,
