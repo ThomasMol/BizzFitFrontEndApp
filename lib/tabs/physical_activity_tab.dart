@@ -1,14 +1,10 @@
-import 'dart:convert';
-
 import 'package:bizzfit/api.dart';
 import 'package:bizzfit/navigation_bar.dart';
-import 'package:bizzfit/strava/auth.dart';
+import 'package:bizzfit/strava/api.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:oauth2_client/oauth2_helper.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../utils.dart';
-import '../strava/secrets.dart';
 
 class PhysicalActivityTab extends StatefulWidget {
   static const title = 'Activities';
@@ -23,13 +19,18 @@ class _PhysicalActivityTabState extends State<PhysicalActivityTab> {
   List<String> weekDates;
   List<String> weekDatesDisplay;
 
+  final secureStorage = FlutterSecureStorage();
+  bool stravaAuthenticated = false;
+  StravaApi stravaApi = StravaApi();
+
   @override
   void initState() {
     super.initState();
     futureActivityWeek = fetchActivitiesWeek();
-
     weekDates = Utils.generateListDates('yyyy-MM-dd', 5);
     weekDatesDisplay = Utils.generateListDates('E d MMMM', 5);
+    stravaAuthenticated =
+        secureStorage.read(key: 'strava_authenticated') != null;
   }
 
   @override
@@ -78,6 +79,7 @@ class _PhysicalActivityTabState extends State<PhysicalActivityTab> {
       weekDates = Utils.generateListDates('yyyy-MM-dd', 5);
       weekDatesDisplay = Utils.generateListDates('E d MMMM', 5);
     });
+    fetchStravaActivities();
   }
 
   Future<List<dynamic>> fetchActivitiesWeek() async {
@@ -90,16 +92,18 @@ class _PhysicalActivityTabState extends State<PhysicalActivityTab> {
   }
 
   // Function that will fetch strava activities if user is connected with strava
+  // TODO check when last time it was updated, so duplicates cannot happen
   fetchStravaActivities() async {
-    StravaOAuth2Client stravaOAuth2Client = StravaOAuth2Client();
-    OAuth2Helper oAuth2Helper = OAuth2Helper(stravaOAuth2Client,
-        grantType: OAuth2Helper.AUTHORIZATION_CODE,
-        clientId: stravaClientId,
-        clientSecret: stravaSecret,
-        scopes: ['activity:read_all']);
-
-    http.Response response = await oAuth2Helper
-        .get('https://www.strava.com/api/v3/athlete/activities');
-    print(jsonDecode(response.body));
+    var activities = await stravaApi.getData('athlete/activities');
+    if (activities != null) {
+      var activityData = {
+        'type': activities[0]['type'],
+        'time': activities[0]['moving_time'],
+        'date_time': activities[0]['start_date_local'],
+        'fitness_api_id': 'strava'
+      };
+      var response =
+          await CallApi().postRequest(activityData, '/physicalactivities');
+    }
   }
 }

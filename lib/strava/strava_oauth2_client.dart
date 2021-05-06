@@ -1,6 +1,5 @@
-// Strava api oauth2.0
+// Strava api oauth2.0 client
 import 'package:oauth2_client/oauth2_client.dart';
-import 'secrets.dart';
 
 class StravaOAuth2Client extends OAuth2Client {
   StravaOAuth2Client(): super(
