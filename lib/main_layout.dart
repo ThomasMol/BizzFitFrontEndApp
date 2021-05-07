@@ -1,13 +1,13 @@
 import 'package:bizzfit/authentication/login_page.dart';
+import 'package:bizzfit/tabs/mood_tab.dart';
 import 'package:bizzfit/tabs/physical_activity_tab.dart';
-import 'package:bizzfit/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'tabs/activity_tab.dart';
 import 'tabs/insights_tab.dart';
 import 'tabs/ranking_tab.dart';
 import 'tabs/shop_tab.dart';
-import 'tabs/social_tab.dart';
+import 'tabs/feed_tab.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -51,8 +51,8 @@ class _HomeScreenState extends State<HomeScreen> {
       activeColor: CupertinoColors.activeOrange,
       items: [
         BottomNavigationBarItem(
-          label: SocialTab.title,
-          icon: SocialTab.icon,
+          label: FeedTab.title,
+          icon: FeedTab.icon,
         ),
         BottomNavigationBarItem(
           label: RankingTab.title,
@@ -61,6 +61,10 @@ class _HomeScreenState extends State<HomeScreen> {
         BottomNavigationBarItem(
           label: PhysicalActivityTab.title,
           icon: PhysicalActivityTab.icon,
+        ),
+        BottomNavigationBarItem(
+          label: MoodTab.title,
+          icon: MoodTab.icon,
         ),
         BottomNavigationBarItem(
           label: InsightsTab.title,
@@ -76,8 +80,8 @@ class _HomeScreenState extends State<HomeScreen> {
       switch (index) {
         case 0:
           return CupertinoTabView(
-            defaultTitle: SocialTab.title,
-            builder: (context) => SocialTab(),
+            defaultTitle: FeedTab.title,
+            builder: (context) => FeedTab(),
           );
         case 1:
           return CupertinoTabView(
@@ -90,6 +94,11 @@ class _HomeScreenState extends State<HomeScreen> {
             builder: (context) => PhysicalActivityTab(),
           );
         case 3:
+          return CupertinoTabView(
+            defaultTitle: MoodTab.title,
+            builder: (context) => MoodTab(),
+          );
+        case 4:
           return CupertinoTabView(
             defaultTitle: InsightsTab.title,
             builder: (context) => InsightsTab(),
@@ -112,8 +121,8 @@ class _HomeScreenState extends State<HomeScreen> {
       activeColor: CupertinoColors.activeOrange,
       items: [
         BottomNavigationBarItem(
-          label: SocialTab.title,
-          icon: SocialTab.icon,
+          label: FeedTab.title,
+          icon: FeedTab.icon,
         ),
         BottomNavigationBarItem(
           label: RankingTab.title,
@@ -123,7 +132,11 @@ class _HomeScreenState extends State<HomeScreen> {
           label: PhysicalActivityTab.title,
           icon: PhysicalActivityTab.icon,
         ),
-       /*  BottomNavigationBarItem(
+        BottomNavigationBarItem(
+          label: MoodTab.title,
+          icon: MoodTab.icon,
+        ),
+        /*  BottomNavigationBarItem(
           label: ShopTab.title,
           icon: ShopTab.icon,
         ), */
@@ -133,8 +146,8 @@ class _HomeScreenState extends State<HomeScreen> {
       switch (index) {
         case 0:
           return CupertinoTabView(
-            defaultTitle: SocialTab.title,
-            builder: (context) => SocialTab(),
+            defaultTitle: FeedTab.title,
+            builder: (context) => FeedTab(),
           );
         case 1:
           return CupertinoTabView(
@@ -146,7 +159,12 @@ class _HomeScreenState extends State<HomeScreen> {
             defaultTitle: PhysicalActivityTab.title,
             builder: (context) => PhysicalActivityTab(),
           );
-       /*  case 3:
+        case 3:
+          return CupertinoTabView(
+            defaultTitle: MoodTab.title,
+            builder: (context) => MoodTab(),
+          );
+        /*  case 3:
           return CupertinoTabView(
             defaultTitle: ShopTab.title,
             builder: (context) => ShopTab(),

@@ -3,15 +3,15 @@ import 'package:flutter/material.dart';
 import '../navigation_bar.dart';
 import '../utils.dart';
 
-class SocialTab extends StatefulWidget {
-  static const title = 'Social';
+class FeedTab extends StatefulWidget {
+  static const title = 'Feed';
   static const icon = Icon(CupertinoIcons.person_2_fill);
 
   @override
-  _SocialTabState createState() => _SocialTabState();
+  _FeedTabState createState() => _FeedTabState();
 }
 
-class _SocialTabState extends State<SocialTab> {
+class _FeedTabState extends State<FeedTab> {
   TextEditingController _textController;
 
   Widget sideScrollCard(AssetImage image, String title, String subtitle) {
