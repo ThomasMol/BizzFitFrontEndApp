@@ -110,11 +110,8 @@ class _RankingTabState extends State<RankingTab> {
         });
 
     // Create scaffolding
-    return SafeArea(
-        child: Scaffold(
-            body: CustomScrollView(
+    return CustomScrollView(
       slivers: [
-        NavigationBar(),
         CupertinoSliverRefreshControl(onRefresh: () async {
           reloadData();
         }),
@@ -135,7 +132,7 @@ class _RankingTabState extends State<RankingTab> {
                 ))),
         builderInOrganizationRanking
       ],
-    )));
+    );
   }
 
   void reloadData() {

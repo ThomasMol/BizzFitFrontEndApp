@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../navigation_bar.dart';
 import '../utils.dart';
 
 class FeedTab extends StatefulWidget {
@@ -75,17 +74,12 @@ class _FeedTabState extends State<FeedTab> {
   Widget build(BuildContext context) {
     return CustomScrollView(
       slivers: [
-        NavigationBar(),
-        CupertinoSliverRefreshControl(
-            // onRefresh: Utils.showMessage(context,'test'),
-            ),
         SliverSafeArea(
           top: false,
           sliver: SliverList(
             delegate: SliverChildBuilderDelegate(
               (context, index) {
-                return Material(
-                    child: Column(children: [
+                return Column(children: [
                   Container(
                       height: 215,
                       width: MediaQuery.of(context).size.width,
@@ -166,7 +160,7 @@ class _FeedTabState extends State<FeedTab> {
                       "Meditation", 'Low intensity'),
                   fullImageCard(AssetImage('assets/weightlifting.jpg'),
                       "Weightlifting", 'High intensity'),
-                ]));
+                ]);
               },
               childCount: 1,
             ),

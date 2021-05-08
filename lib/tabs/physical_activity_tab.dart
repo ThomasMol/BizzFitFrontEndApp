@@ -60,17 +60,15 @@ class _PhysicalActivityTabState extends State<PhysicalActivityTab> {
         });
 
     return SafeArea(
-        child: Scaffold(
-      body: CustomScrollView(
+        child:CustomScrollView(
         slivers: [
-          NavigationBar(),
           CupertinoSliverRefreshControl(onRefresh: () async {
             reloadData();
           }),
           activityBuilder
         ],
       ),
-    ));
+    );
   }
 
   void reloadData() {

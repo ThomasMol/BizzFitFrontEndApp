@@ -52,17 +52,15 @@ class _MoodTabState extends State<MoodTab> {
         });
 
     return SafeArea(
-        child: Scaffold(
-      body: CustomScrollView(
+        child: CustomScrollView(
         slivers: [
-          NavigationBar(),
           CupertinoSliverRefreshControl(onRefresh: () async {
             reloadData();
           }),
           moodBuilder
         ],
       ),
-    ));
+    );
   }
 
   void reloadData() {

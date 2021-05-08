@@ -1,49 +1,90 @@
-import 'package:bizzfit/authentication/login_page.dart';
+import 'package:bizzfit/profile_page.dart';
 import 'package:bizzfit/tabs/mood_tab.dart';
 import 'package:bizzfit/tabs/physical_activity_tab.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'tabs/activity_tab.dart';
 import 'tabs/insights_tab.dart';
 import 'tabs/ranking_tab.dart';
-import 'tabs/shop_tab.dart';
 import 'tabs/feed_tab.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
+  HomeScreen({Key key, this.permissionLevel}) : super(key: key);
+  final int permissionLevel;
+
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  FlutterSecureStorage storage = FlutterSecureStorage();
-  Future<int> permission_level;
+  int _selectedIndex = 0;
+  String _title;
+
+  final List<StatefulWidget> _widgetOptions = [
+    FeedTab(),
+    RankingTab(),
+    PhysicalActivityTab(),
+    MoodTab(),
+    InsightsTab()
+  ];
 
   @override
   void initState() {
     super.initState();
-    permission_level = checkPermissions();
+    _title = FeedTab.title;
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: permission_level,
-        builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
-          if (snapshot.hasData) {
-            if (snapshot.data > 0) {
-              return pageAdmin;
-            } else {
-              return pageRegular;
-            }
-          } else {
-            return Scaffold(body: Center(child: CupertinoActivityIndicator()));
-          }
-        });
-  }
-
-  Future<int> checkPermissions() async {
-    return int.parse(await storage.read(key: 'permission_level'));
+    return Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          flexibleSpace: FlexibleSpaceBar(
+            title: Text(_title),
+          ),
+          actions: <Widget>[
+            IconButton(
+              iconSize: 30,
+              padding: EdgeInsets.all(14),
+              color: Colors.orangeAccent,
+              icon: const Icon(Icons.account_circle),
+              tooltip: 'View profile',
+              onPressed: openProfile,
+            ),
+          ],
+        ),
+        body: Center(
+          child: _widgetOptions.elementAt(_selectedIndex),
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          items: <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              label: FeedTab.title,
+              icon: FeedTab.icon,
+            ),
+            BottomNavigationBarItem(
+              label: RankingTab.title,
+              icon: RankingTab.icon,
+            ),
+            BottomNavigationBarItem(
+              label: PhysicalActivityTab.title,
+              icon: PhysicalActivityTab.icon,
+            ),
+            BottomNavigationBarItem(
+              label: MoodTab.title,
+              icon: MoodTab.icon,
+            ),
+            if (widget.permissionLevel == 1)
+              BottomNavigationBarItem(
+                label: InsightsTab.title,
+                icon: InsightsTab.icon,
+              ),
+          ],
+          currentIndex: _selectedIndex,
+          selectedItemColor: Colors.amber[800],
+          onTap: _onItemTapped,
+          selectedFontSize: 12,
+          type: BottomNavigationBarType.fixed,
+        ));
   }
 
   Widget pageAdmin = CupertinoTabScaffold(
@@ -176,4 +217,37 @@ class _HomeScreenState extends State<HomeScreen> {
       }
     },
   );
+
+  void openProfile() {
+    Navigator.of(context, rootNavigator: true).push<void>(
+      CupertinoPageRoute(
+        title: Profile.title,
+        fullscreenDialog: true,
+        builder: (context) => Profile(),
+      ),
+    );
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+      switch (index) {
+        case 0:
+          _title = FeedTab.title;
+          break;
+        case 1:
+          _title = RankingTab.title;
+          break;
+        case 2:
+          _title = PhysicalActivityTab.title;
+          break;
+        case 3:
+          _title = MoodTab.title;
+          break;
+        case 4:
+          _title = InsightsTab.title;
+          break;
+      }
+    });
+  }
 }

@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../navigation_bar.dart';
@@ -8,8 +6,7 @@ import '../activities/create_mental_state_page.dart';
 import '../api.dart';
 import 'package:intl/intl.dart';
 
-import '../utils.dart';
-
+// Not used anymore, moods and physical activity are now seperate tab
 class ActivityTab extends StatefulWidget {
   static const title = 'Activity';
   static const icon = Icon(CupertinoIcons.chart_bar_square_fill);

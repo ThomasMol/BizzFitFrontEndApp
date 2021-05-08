@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../api.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import '../main_layout.dart';
+import '../home_screen.dart';
 import '../utils.dart';
 
 class LoginPage extends StatefulWidget {
@@ -22,8 +22,8 @@ class _LoginPageState extends State<StatefulWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-        child: Center(
+    return Scaffold(
+        body: Center(
             child: ListView(
       children: <Widget>[
         SizedBox(
@@ -83,7 +83,7 @@ class _LoginPageState extends State<StatefulWidget> {
 
       Navigator.of(context, rootNavigator: true)
           .pushReplacement(CupertinoPageRoute(
-        builder: (context) => HomeScreen(),
+        builder: (context) => HomeScreen(permissionLevel: response['data']['user_permission_level'],),
       ));
     } else if (response['status'] == 'Error') {
       Utils.showMessage(response['message'], context);
