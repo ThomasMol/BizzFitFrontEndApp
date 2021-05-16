@@ -60,17 +60,15 @@ class _PhysicalActivityTabState extends State<PhysicalActivityTab> {
         });
 
     return SafeArea(
-        child: Scaffold(
-      body: CustomScrollView(
+        child:CustomScrollView(
         slivers: [
-          NavigationBar(),
           CupertinoSliverRefreshControl(onRefresh: () async {
             reloadData();
           }),
           activityBuilder
         ],
       ),
-    ));
+    );
   }
 
   void reloadData() {
@@ -94,16 +92,27 @@ class _PhysicalActivityTabState extends State<PhysicalActivityTab> {
   // Function that will fetch strava activities if user is connected with strava
   // TODO check when last time it was updated, so duplicates cannot happen
   fetchStravaActivities() async {
-    var activities = await stravaApi.getData('athlete/activities');
-    if (activities != null) {
-      var activityData = {
-        'type': activities[0]['type'],
-        'time': activities[0]['moving_time'],
-        'date_time': activities[0]['start_date_local'],
-        'fitness_api_id': 'strava'
-      };
-      var response =
-          await CallApi().postRequest(activityData, '/physicalactivities');
+    if (await secureStorage.read(key: 'strava_authenticated') != null) {
+      var lastRetrieved =
+          await secureStorage.read(key: 'strava_last_retrieved');
+      var activities =
+          await stravaApi.getData('athlete/activities?after=' + lastRetrieved);
+      int newLastRetrieved =
+          (DateTime.now().millisecondsSinceEpoch / 1000).floor();
+      await secureStorage.write(
+          key: 'strava_last_retrieved', value: newLastRetrieved.toString());
+      if (activities.length > 0) {
+        for (var activity in activities) {
+          var activityData = {
+            'type': activity['type'],
+            'time': activity['moving_time'],
+            'date_time': activity['start_date_local'],
+            'fitness_api_id': 'strava'
+          };
+          var response =
+              await CallApi().postRequest(activityData, '/physicalactivities');
+        }
+      }
     }
   }
 }

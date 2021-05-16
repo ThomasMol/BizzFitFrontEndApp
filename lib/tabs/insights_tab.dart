@@ -159,10 +159,8 @@ class _InsightsTabState extends State<InsightsTab> {
         });
 
     return SafeArea(
-        child: Scaffold(
-            body: CustomScrollView(
+        child: CustomScrollView(
       slivers: [
-        NavigationBar(),
         CupertinoSliverRefreshControl(
           onRefresh: () async {
             refreshData();
@@ -170,7 +168,7 @@ class _InsightsTabState extends State<InsightsTab> {
         ),
         builderInsights,
       ],
-    )));
+    ));
   }
 
   void refreshData() {
