@@ -6,7 +6,9 @@ class CallApi {
 
   // Change _url to bizzfitbackend.herokuapp.com for 'production' backend 
   // Also means you don't need to run the backend and database locally, so you can only work on the front end (here with flutter)
-  final String _url = '192.168.178.13';
+  // '192.168.178.13'; thuis
+  // '192.168.2.8'; thuis thuis
+  final String _url = '192.168.2.8';
   FlutterSecureStorage storage = FlutterSecureStorage();
 
 

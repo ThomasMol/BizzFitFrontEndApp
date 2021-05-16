@@ -1,3 +1,4 @@
+import 'package:bizzfit/fitbit/api.dart';
 import 'package:bizzfit/strava/api.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +20,7 @@ class _ProfileState extends State<Profile> {
   final secureStorage = FlutterSecureStorage();
   bool stravaAuthenticated = false;
   StravaApi stravaApi = StravaApi();
+  FitbitApi fitbitApi = FitbitApi();
 
   @override
   void initState() {
@@ -89,7 +91,25 @@ class _ProfileState extends State<Profile> {
               ),
               const Divider(
                 height: 2.0,
-              ),              
+              ),
+              ListTile(
+                leading: Icon(Icons.api),
+                title: Text('Connect with your fitbit account'),
+                trailing: Icon(CupertinoIcons.chevron_forward),
+                onTap: fitbitApi.storeAuth,
+              ),
+              const Divider(
+                height: 2.0,
+              ),
+              ListTile(
+                leading: Icon(Icons.api),
+                title: Text('Remove fitbit'),
+                trailing: Icon(CupertinoIcons.chevron_forward),
+                onTap: fitbitApi.removeAuth,
+              ),
+              const Divider(
+                height: 2.0,
+              ),
             ]);
           } else {
             newsListSliver = Center(
@@ -103,7 +123,7 @@ class _ProfileState extends State<Profile> {
         navigationBar: CupertinoNavigationBar(),
         child: SafeArea(
             child: Material(
-                child: Column(
+                child: ListView(
           children: [
             builderProfile,
             Spacer(),
@@ -140,7 +160,7 @@ class _ProfileState extends State<Profile> {
     if (response['status'] == 'Success') {
       await storage.delete(key: 'access_token');
       await storage.delete(key: 'permission_level');
-      
+
       if (stravaAuthenticated) {
         stravaApi.removeAuth();
       }
