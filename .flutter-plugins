@@ -1,10 +1,10 @@
 # This is a generated file; do not edit or check into version control.
-device_info=C:\\flutter\\.pub-cache\\hosted\\pub.dartlang.org\\device_info-2.0.0\\
-flutter_secure_storage=C:\\flutter\\.pub-cache\\hosted\\pub.dartlang.org\\flutter_secure_storage-4.2.0\\
-flutter_web_auth=C:\\flutter\\.pub-cache\\hosted\\pub.dartlang.org\\flutter_web_auth-0.3.0\\
-health=C:\\flutter\\.pub-cache\\hosted\\pub.dartlang.org\\health-3.0.5\\
-url_launcher=C:\\flutter\\.pub-cache\\hosted\\pub.dartlang.org\\url_launcher-6.0.3\\
-url_launcher_linux=C:\\flutter\\.pub-cache\\hosted\\pub.dartlang.org\\url_launcher_linux-2.0.0\\
-url_launcher_macos=C:\\flutter\\.pub-cache\\hosted\\pub.dartlang.org\\url_launcher_macos-2.0.0\\
-url_launcher_web=C:\\flutter\\.pub-cache\\hosted\\pub.dartlang.org\\url_launcher_web-2.0.0\\
-url_launcher_windows=C:\\flutter\\.pub-cache\\hosted\\pub.dartlang.org\\url_launcher_windows-2.0.0\\
+device_info=/Users/thomasmol/Development/SDKs/flutter 2/.pub-cache/hosted/pub.dartlang.org/device_info-2.0.0/
+flutter_secure_storage=/Users/thomasmol/Development/SDKs/flutter 2/.pub-cache/hosted/pub.dartlang.org/flutter_secure_storage-4.2.0/
+flutter_web_auth=/Users/thomasmol/Development/SDKs/flutter 2/.pub-cache/hosted/pub.dartlang.org/flutter_web_auth-0.3.0/
+health=/Users/thomasmol/Development/SDKs/flutter 2/.pub-cache/hosted/pub.dartlang.org/health-3.0.5/
+url_launcher=/Users/thomasmol/Development/SDKs/flutter 2/.pub-cache/hosted/pub.dartlang.org/url_launcher-6.0.3/
+url_launcher_linux=/Users/thomasmol/Development/SDKs/flutter 2/.pub-cache/hosted/pub.dartlang.org/url_launcher_linux-2.0.0/
+url_launcher_macos=/Users/thomasmol/Development/SDKs/flutter 2/.pub-cache/hosted/pub.dartlang.org/url_launcher_macos-2.0.0/
+url_launcher_web=/Users/thomasmol/Development/SDKs/flutter 2/.pub-cache/hosted/pub.dartlang.org/url_launcher_web-2.0.0/
+url_launcher_windows=/Users/thomasmol/Development/SDKs/flutter 2/.pub-cache/hosted/pub.dartlang.org/url_launcher_windows-2.0.0/
