@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../navigation_bar.dart';
+import '../widgets/navigation_bar.dart';
 import '../activities/create_physical_activity_page.dart';
 import '../activities/create_mental_state_page.dart';
 import '../api.dart';

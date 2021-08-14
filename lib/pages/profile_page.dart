@@ -1,11 +1,12 @@
-import 'package:bizzfit/fitbit/api.dart';
-import 'package:bizzfit/strava/api.dart';
+import 'package:bizzfit/constants.dart';
+import 'package:bizzfit/fitness_apis/fitbit/api.dart';
+import 'package:bizzfit/fitness_apis/strava/api.dart';
+import 'package:bizzfit/pages/authentication/login_page.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'authentication/login_page.dart';
-import 'utils.dart';
-import 'api.dart';
+import '../utils.dart';
+import '../api.dart';
 
 class Profile extends StatefulWidget {
   static const title = 'Profile';
@@ -139,12 +140,12 @@ class _ProfileState extends State<Profile> {
   }
 
   Future<dynamic> fetchProfile() async {
-    var response = await CallApi().getRequest(null, '/user');
+    /* var response = await CallApi().getRequest(null, '/user');
     if (response['status'] == 'Success') {
       return response['data'];
     } else if (response['status'] == 'Error') {
       Utils.showMessage(response['message'], context);
-    }
+    } */
   }
 
   void reloadData() {
@@ -155,22 +156,23 @@ class _ProfileState extends State<Profile> {
 
   void _logOut() async {
     FlutterSecureStorage storage = FlutterSecureStorage();
-    var response = await CallApi().postRequest(null, '/auth/logout');
+    final response = await supabase.auth.signOut();
 
-    if (response['status'] == 'Success') {
+    if (response.error != null) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(response.error.message),
+        backgroundColor: Colors.red,
+      ));
+    } else {
       await storage.delete(key: 'access_token');
       await storage.delete(key: 'permission_level');
-
       if (stravaAuthenticated) {
         stravaApi.removeAuth();
       }
-
       Navigator.pushAndRemoveUntil(
           context,
           CupertinoPageRoute(builder: (context) => LoginPage()),
           (Route<dynamic> route) => false);
-    } else if (response['status'] == 'Error') {
-      Utils.showMessage(response['message'], context);
     }
   }
 }

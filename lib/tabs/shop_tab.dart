@@ -1,9 +1,9 @@
 import 'package:bizzfit/api.dart';
 import 'package:bizzfit/utils.dart';
 import 'package:flutter/cupertino.dart';
-import '../navigation_bar.dart';
+import '../widgets/navigation_bar.dart';
 import 'package:flutter/material.dart';
-import '../applewatch_page.dart';
+import '../pages/applewatch_page.dart';
 
 class ShopTab extends StatefulWidget {
   static const title = 'Shop';

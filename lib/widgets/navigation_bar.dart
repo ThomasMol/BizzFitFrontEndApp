@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'profile_page.dart';
+import '../pages/profile_page.dart';
 
 // Not used anymore
 

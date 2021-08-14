@@ -8,6 +8,10 @@ PODS:
     - Flutter
   - health (1.0.1):
     - Flutter
+  - path_provider (0.0.1):
+    - Flutter
+  - uni_links (0.0.1):
+    - Flutter
   - url_launcher (0.0.1):
     - Flutter
 
@@ -17,6 +21,8 @@ DEPENDENCIES:
   - flutter_secure_storage (from `.symlinks/plugins/flutter_secure_storage/ios`)
   - flutter_web_auth (from `.symlinks/plugins/flutter_web_auth/ios`)
   - health (from `.symlinks/plugins/health/ios`)
+  - path_provider (from `.symlinks/plugins/path_provider/ios`)
+  - uni_links (from `.symlinks/plugins/uni_links/ios`)
   - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
 
 EXTERNAL SOURCES:
@@ -30,6 +36,10 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_web_auth/ios"
   health:
     :path: ".symlinks/plugins/health/ios"
+  path_provider:
+    :path: ".symlinks/plugins/path_provider/ios"
+  uni_links:
+    :path: ".symlinks/plugins/uni_links/ios"
   url_launcher:
     :path: ".symlinks/plugins/url_launcher/ios"
 
@@ -39,6 +49,8 @@ SPEC CHECKSUMS:
   flutter_secure_storage: 7953c38a04c3fdbb00571bcd87d8e3b5ceb9daec
   flutter_web_auth: ede89bf8107b021cf16e769756d267d84d24e88b
   health: 44840ad4328aa5586e77bef289898bfed644a81c
+  path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
+  uni_links: d97da20c7701486ba192624d99bffaaffcfc298a
   url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
 
 PODFILE CHECKSUM: a75497545d4391e2d394c3668e20cfb1c2bbd4aa

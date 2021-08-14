@@ -1,10 +1,10 @@
-import 'package:bizzfit/profile_page.dart';
+import 'package:bizzfit/pages/profile_page.dart';
 import 'package:bizzfit/tabs/mood_tab.dart';
 import 'package:bizzfit/tabs/physical_activity_tab.dart';
 import 'package:flutter/cupertino.dart';
-import 'tabs/insights_tab.dart';
-import 'tabs/ranking_tab.dart';
-import 'tabs/feed_tab.dart';
+import '../tabs/insights_tab.dart';
+import '../tabs/ranking_tab.dart';
+import '../tabs/feed_tab.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {

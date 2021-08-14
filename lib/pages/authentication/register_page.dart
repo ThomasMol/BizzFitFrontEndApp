@@ -1,16 +1,13 @@
+import 'package:bizzfit/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../api.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import '../home_screen.dart';
-import '../utils.dart';
 
-class LoginPage extends StatefulWidget {
+class RegisterPage extends StatefulWidget {
   @override
-  _LoginPageState createState() => _LoginPageState();
+  _RegisterPageState createState() => _RegisterPageState();
 }
 
-class _LoginPageState extends State<StatefulWidget> {
+class _RegisterPageState extends State<StatefulWidget> {
   TextEditingController _emailTextController = TextEditingController();
   TextEditingController _passwordTextController = TextEditingController();
   bool _isLoading = false;
@@ -37,7 +34,8 @@ class _LoginPageState extends State<StatefulWidget> {
             )),
         Padding(
             padding: EdgeInsets.fromLTRB(50, 50, 50, 10),
-            child: Text('Login with your credentials')),
+            child: Text(
+                'Register with your email and a password (at least 8 characters)')),
         Padding(
             padding: EdgeInsets.symmetric(vertical: 10, horizontal: 50),
             child: CupertinoTextField(
@@ -57,40 +55,28 @@ class _LoginPageState extends State<StatefulWidget> {
             child: _isLoading
                 ? CupertinoActivityIndicator()
                 : CupertinoButton.filled(
-                    child: Text('Login'), onPressed: _handleLogin)),
+                    child: Text('Register'), onPressed: _handleRegistration)),
       ],
     )));
   }
 
-  void _handleLogin() async {
+  void _handleRegistration() async {
     setState(() {
       _isLoading = true;
     });
 
-    var data = {
-      'email': _emailTextController.text,
-      'password': _passwordTextController.text
-    };
-    var response = await CallApi().postRequest(data, '/auth/login');
-    if (response['status'] == 'Success') {
-      Utils.showMessage('Succesfully logged in!', context);
-      FlutterSecureStorage storage = FlutterSecureStorage();
-      await storage.write(
-          key: 'access_token', value: response['data']['token']);
-      await storage.write(
-          key: 'permission_level',
-          value: response['data']['user_permission_level'].toString());
-
-      Navigator.of(context, rootNavigator: true)
-          .pushReplacement(CupertinoPageRoute(
-        builder: (context) => HomeScreen(permissionLevel: response['data']['user_permission_level'],),
+    final response = await supabase.auth
+        .signUp(_emailTextController.text, _passwordTextController.text);
+        
+    if (response.error != null) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(response.error.message),
+        backgroundColor: Colors.red,
       ));
-    } else if (response['status'] == 'Error') {
-      Utils.showMessage(response['message'], context);
     } else {
-      // Handle when there is no error or no success (probably when server is not online or something)
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('registered!')));
     }
-
     setState(() {
       _isLoading = false;
     });

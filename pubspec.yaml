@@ -32,10 +32,14 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
+
   health: ^3.0.5
   url_launcher: ^6.0.3
   oauth2_client: ^2.1.0
   flutter_web_auth: ^0.3.0
+
+  # Adds supabase support, currently the client is still in beta
+  supabase_flutter: ^0.1.0
 
 dev_dependencies:
   flutter_launcher_icons: ^0.9.0

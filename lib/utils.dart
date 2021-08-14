@@ -21,6 +21,7 @@ class Utils {
     Icon(Icons.sentiment_satisfied, color: Colors.green, size: 42),
     Icon(Icons.sentiment_very_satisfied, color: Colors.lightGreen, size: 42)
   ];
+  
   // Textual mood scale scale 1 - 5
   static List<String> moods = ['Awful', 'Bad', 'Neutral', 'Good', 'Amazing'];
 

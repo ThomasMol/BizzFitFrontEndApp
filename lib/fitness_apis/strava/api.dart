@@ -1,9 +1,8 @@
 import 'dart:convert';
-import 'package:bizzfit/strava/strava_oauth2_client.dart';
+import 'package:bizzfit/fitness_apis/strava/strava_oauth2_client.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:oauth2_client/oauth2_helper.dart';
 import 'package:http/http.dart' as http;
-import '../utils.dart';
 
 class StravaApi {
   final secureStorage = FlutterSecureStorage();

@@ -1,5 +1,5 @@
 import 'package:bizzfit/api.dart';
-import 'package:bizzfit/navigation_bar.dart';
+import 'package:bizzfit/widgets/navigation_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../utils.dart';

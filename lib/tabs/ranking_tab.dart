@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../navigation_bar.dart';
+import '../widgets/navigation_bar.dart';
 import '../api.dart';
 import '../utils.dart';
 
