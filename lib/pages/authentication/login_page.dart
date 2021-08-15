@@ -1,9 +1,7 @@
-import 'package:bizzfit/api.dart';
 import 'package:bizzfit/constants.dart';
-import 'package:bizzfit/utils.dart';
+import 'package:bizzfit/pages/authentication/register_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../home_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -59,6 +57,19 @@ class _LoginPageState extends State<StatefulWidget> {
                 ? CupertinoActivityIndicator()
                 : CupertinoButton.filled(
                     child: Text('Login'), onPressed: _handleLogin)),
+        SizedBox(
+          height: 25,
+        ),
+        Padding(
+            padding: EdgeInsets.symmetric(vertical: 5, horizontal: 50),
+            child: CupertinoButton(
+                child: Text('No account? Register here'),
+                onPressed: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => RegisterPage()),
+                  );
+                })),
       ],
     )));
   }
@@ -80,7 +91,7 @@ class _LoginPageState extends State<StatefulWidget> {
     } else {
       ScaffoldMessenger.of(context)
           .showSnackBar(const SnackBar(content: Text('Logged in!')));
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => HomeScreen()),
       );
