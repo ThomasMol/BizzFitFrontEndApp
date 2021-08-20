@@ -1,6 +1,6 @@
 import 'package:bizzfit/api.dart';
+import 'package:bizzfit/constants.dart';
 import 'package:bizzfit/fitness_apis/strava/api.dart';
-import 'package:bizzfit/widgets/navigation_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -81,11 +81,17 @@ class _PhysicalActivityTabState extends State<PhysicalActivityTab> {
   }
 
   Future<List<dynamic>> fetchActivitiesWeek() async {
-    var response = await CallApi().getRequest(null, '/physicalactivities');
-    if (response['status'] == 'Success') {
-      return response['data'];
+    final response = await supabase
+        .from('physical_activities')
+        .select()
+        .order('date_time')
+        .execute();
+    if (response.error != null && response.status != 406) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(response.error.message)));
+      return null;
     } else {
-      return response['message'];
+      return response.data;
     }
   }
 

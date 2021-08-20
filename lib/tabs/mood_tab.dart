@@ -1,4 +1,5 @@
 import 'package:bizzfit/api.dart';
+import 'package:bizzfit/constants.dart';
 import 'package:bizzfit/widgets/navigation_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -72,11 +73,17 @@ class _MoodTabState extends State<MoodTab> {
   }
 
   Future<List<dynamic>> fetchMoodsWeek() async {
-    var response = await CallApi().getRequest(null, '/mentalstates');
-    if (response['status'] == 'Success') {
-      return response['data'];
+    final response = await supabase
+        .from('mental_states')
+        .select()
+        .order('date_time')
+        .execute();
+    if (response.error != null && response.status != 406) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(response.error.message)));
+      return null;
     } else {
-      return response['message'];
+      return response.data;
     }
   }
   

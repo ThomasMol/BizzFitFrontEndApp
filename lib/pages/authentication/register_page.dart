@@ -19,9 +19,10 @@ class _RegisterPageState extends State<StatefulWidget> {
 
   bool _isLoading = false;
 
-  Future<void> _getProfile() async {
+  Future<void> _getOrganizations() async {
     final response = await supabase.from('organizations').select().execute();
     if (response.error != null && response.status != 406) {
+      print(response.error);
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(response.error.message)));
     }
@@ -38,7 +39,7 @@ class _RegisterPageState extends State<StatefulWidget> {
 
   @override
   void initState() {
-    _getProfile();
+    _getOrganizations();
     super.initState();
   }
 
@@ -134,6 +135,7 @@ class _RegisterPageState extends State<StatefulWidget> {
         .signUp(_emailController.text, _passwordController.text);
 
     if (response.error != null) {
+      print(response.error);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(response.error.message),
         backgroundColor: Colors.red,
@@ -143,11 +145,14 @@ class _RegisterPageState extends State<StatefulWidget> {
           .showSnackBar(const SnackBar(content: Text('registered!')));
       _insertProfile();
     }
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   void _insertProfile() async {
     final updates = {
-      'id':supabase.auth.currentUser.id,
+      'id': supabase.auth.currentUser.id,
       'first_name': _firstNameController.text,
       'last_name': _lastNameController.text,
       'organization_id': _selectedOrganization

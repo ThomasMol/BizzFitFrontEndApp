@@ -1,8 +1,6 @@
+import 'package:bizzfit/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../widgets/navigation_bar.dart';
-import '../api.dart';
-import '../utils.dart';
 
 class RankingTab extends StatefulWidget {
   static const title = 'Ranking';
@@ -23,45 +21,52 @@ class _RankingTabState extends State<RankingTab> {
     super.initState();
     futureOrganizationRanking = fetchOrganizationRanking();
     futureInOrganizationRanking = fetchInOrganizationRanking();
-    futureMyRanking = fetchMyRanking();
-    futureMyOrganizationRanking = fetchMyOrganizationRanking();
+    /* futureMyRanking = fetchMyRanking();
+    futureMyOrganizationRanking = fetchMyOrganizationRanking(); */
   }
 
   Future<List<dynamic>> fetchOrganizationRanking() async {
-    var response = await CallApi().getRequest(null, '/ranking/topten');
-    if (response['status'] == 'Success') {
-      return response['data'];
+    final response = await supabase
+        .from('organizations')
+        .select()
+        .order('score')
+        .limit(10)
+        .execute();
+    if (response.error != null && response.status != 406) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(response.error.message)));
+      return null;
+    } else {
+      return response.data;
     }
   }
 
   Future<List<dynamic>> fetchInOrganizationRanking() async {
-    var response = await CallApi().getRequest(null, '/ranking/myorganization');
-    if (response['status'] == 'Success') {
-      return response['data'];
+    final response = await supabase
+        .from('profiles')
+        .select()
+        .order('score')
+        .limit(10)
+        .execute();
+    if (response.error != null && response.status != 406) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(response.error.message)));
+      return null;
+    } else {
+      return response.data;
     }
   }
 
-  Future<int> fetchMyRanking() async {
-    var response = await CallApi().getRequest(null, '/ranking/myranking');
-    if (response['status'] == 'Success') {
-      return response['data'];
-    }
-  }
+  /*
+  Future<int> fetchMyRanking() async {}
 
-  Future<int> fetchMyOrganizationRanking() async {
-    var response =
-        await CallApi().getRequest(null, '/ranking/myorganizationranking');
-    if (response['status'] == 'Success') {
-      return response['data'];
-    }
-  }
+  Future<int> fetchMyOrganizationRanking() async {} */
 
   @override
   Widget build(BuildContext context) {
     // Top ten of organizations builder
     final builderOrganizationRanking = FutureBuilder<List<dynamic>>(
-        future: Future.wait(
-            [futureOrganizationRanking, futureMyOrganizationRanking]),
+        future: Future.wait([futureOrganizationRanking]),
         builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {
           Widget newsListSliver;
           if (snapshot.hasData) {
@@ -72,9 +77,11 @@ class _RankingTabState extends State<RankingTab> {
                   leading: Text(position.toString()),
                   title: Text(snapshot.data[0][index]['name']),
                   trailing: Text(snapshot.data[0][index]['score'].toString()),
-                  subtitle: snapshot.data[1] == position
+                  subtitle:
+                      /* snapshot.data[1] == position
                       ? Text('Your organization is here!')
-                      : null);
+                      : null) */
+                      Text('data'));
             }, childCount: snapshot.data[0].length));
           } else {
             newsListSliver = SliverToBoxAdapter(
@@ -86,7 +93,7 @@ class _RankingTabState extends State<RankingTab> {
 
     // Top ten of users within organization builder
     final builderInOrganizationRanking = FutureBuilder<List<dynamic>>(
-        future: Future.wait([futureInOrganizationRanking, futureMyRanking]),
+        future: Future.wait([futureInOrganizationRanking]),
         builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {
           Widget newsListSliver;
           if (snapshot.hasData) {
@@ -97,9 +104,9 @@ class _RankingTabState extends State<RankingTab> {
                   leading: Text(position.toString()),
                   title: Text(snapshot.data[0][index]['first_name']),
                   trailing: Text(snapshot.data[0][index]['score'].toString()),
-                  subtitle: snapshot.data[1] == position
+                  subtitle: /* snapshot.data[1] == position
                       ? Text('You are here!')
-                      : null);
+                      : null */ Text('data'));
             }, childCount: snapshot.data[0].length));
           } else {
             newsListSliver = SliverToBoxAdapter(
@@ -107,7 +114,7 @@ class _RankingTabState extends State<RankingTab> {
             );
           }
           return newsListSliver;
-        });
+        }); 
 
     // Create scaffolding
     return CustomScrollView(
@@ -130,7 +137,7 @@ class _RankingTabState extends State<RankingTab> {
                   'Your rankings',
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ))),
-        builderInOrganizationRanking
+        builderInOrganizationRanking 
       ],
     );
   }
@@ -139,8 +146,8 @@ class _RankingTabState extends State<RankingTab> {
     setState(() {
       futureOrganizationRanking = fetchOrganizationRanking();
       futureInOrganizationRanking = fetchInOrganizationRanking();
-      futureMyRanking = fetchMyRanking();
-      futureMyOrganizationRanking = fetchMyOrganizationRanking();
+      /* futureMyRanking = fetchMyRanking();
+      futureMyOrganizationRanking = fetchMyOrganizationRanking(); */
     });
   }
 }

@@ -5,8 +5,6 @@ import 'package:bizzfit/pages/authentication/login_page.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import '../utils.dart';
-import '../api.dart';
 
 class Profile extends StatefulWidget {
   static const title = 'Profile';
@@ -61,7 +59,7 @@ class _ProfileState extends State<Profile> {
               ),
               ListTile(
                 leading: Icon(CupertinoIcons.briefcase_fill),
-                title: Text(snapshot.data['org_name']),
+                title: Text(snapshot.data['org_name'].toString()),
                 subtitle: Text('Organization'),
               ),
               const Divider(
@@ -140,12 +138,22 @@ class _ProfileState extends State<Profile> {
   }
 
   Future<dynamic> fetchProfile() async {
-    /* var response = await CallApi().getRequest(null, '/user');
-    if (response['status'] == 'Success') {
-      return response['data'];
-    } else if (response['status'] == 'Error') {
-      Utils.showMessage(response['message'], context);
-    } */
+    String userId = supabase.auth.user().id;
+    final response = await supabase
+        .from('profiles')
+        .select()
+        .eq('id', userId)
+        .limit(1)
+        .single()
+        .execute();
+    print(response.data);
+    if (response.error != null && response.status != 406) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(response.error.message)));
+      return null;
+    } else {
+      return response.data;
+    }
   }
 
   void reloadData() {

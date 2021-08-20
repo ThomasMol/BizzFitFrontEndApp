@@ -8,7 +8,7 @@ class AuthState<T extends StatefulWidget> extends SupabaseAuthState<T> {
   @override
   void onUnauthenticated() {
     if (mounted) {
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => LoginPage()),
       );
@@ -18,7 +18,7 @@ class AuthState<T extends StatefulWidget> extends SupabaseAuthState<T> {
   @override
   void onAuthenticated(Session session) {
     if (mounted) {
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => HomeScreen()),
       );
