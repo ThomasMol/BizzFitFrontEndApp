@@ -1,7 +1,5 @@
-import 'package:bizzfit/api.dart';
 import 'package:bizzfit/constants.dart';
 import 'package:bizzfit/pages/create_mental_state_page.dart';
-import 'package:bizzfit/widgets/navigation_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../utils.dart';
@@ -95,7 +93,10 @@ class _MoodTabState extends State<MoodTab> {
           moodBuilder
         ],
       ),
-      floatingActionButton: FloatingActionButton(onPressed: openCreateMoodPage, child: Icon(Icons.add),),
+      floatingActionButton: FloatingActionButton(
+        onPressed: openCreateMoodPage,
+        child: Icon(Icons.add),
+      ),
     ));
   }
 }

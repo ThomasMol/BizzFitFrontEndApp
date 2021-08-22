@@ -1,4 +1,3 @@
-import 'package:bizzfit/api.dart';
 import 'package:bizzfit/constants.dart';
 import 'package:bizzfit/fitness_apis/strava/api.dart';
 import 'package:bizzfit/models/strava_athlete_activity.dart';

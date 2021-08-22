@@ -1,5 +1,3 @@
-import 'package:bizzfit/api.dart';
-import 'package:bizzfit/utils.dart';
 import 'package:flutter/cupertino.dart';
 import '../widgets/navigation_bar.dart';
 import 'package:flutter/material.dart';
@@ -21,26 +19,20 @@ class _ShopTabState extends State<ShopTab> {
     futureProfile = fetchProfile();
   }
 
-  // horizontal sliding scrollcard widget
-  Widget sideScrollCard(AssetImage image, String title, String subtitle) {
-    return Card(
-        elevation: 2,
-        clipBehavior: Clip.antiAliasWithSaveLayer,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-        child: Column(children: [
-          Image(
-            image: image,
-            height: 100,
-          ),
-          SizedBox(height: 15),
-          Text(
-            title,
-            style: TextStyle(fontSize: 12),
-          ),
-          SizedBox(height: 5),
-          Text(subtitle, style: TextStyle(fontSize: 14, color: Colors.black54))
-        ]),
-        margin: EdgeInsets.symmetric(horizontal: 15, vertical: 30));
+  void reloadData() {
+    setState(() {
+      futureProfile = fetchProfile();
+    });
+  }
+
+  Future<dynamic> fetchProfile() async {
+    // TODO fetch user profile
+    /* var response = await CallApi().getRequest(null, '/user');
+    if (response['status'] == 'Success') {
+      return response['data'];
+    } else if (response['status'] == 'Error') {
+      Utils.showMessage(response['message'], context);
+    } */
   }
 
   @override
@@ -222,18 +214,25 @@ class _ShopTabState extends State<ShopTab> {
     );
   }
 
-  Future<dynamic> fetchProfile() async {
-    var response = await CallApi().getRequest(null, '/user');
-    if (response['status'] == 'Success') {
-      return response['data'];
-    } else if (response['status'] == 'Error') {
-      Utils.showMessage(response['message'], context);
-    }
-  }
-
-  void reloadData() {
-    setState(() {
-      futureProfile = fetchProfile();
-    });
+  // horizontal sliding scrollcard widget
+  Widget sideScrollCard(AssetImage image, String title, String subtitle) {
+    return Card(
+        elevation: 2,
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+        child: Column(children: [
+          Image(
+            image: image,
+            height: 100,
+          ),
+          SizedBox(height: 15),
+          Text(
+            title,
+            style: TextStyle(fontSize: 12),
+          ),
+          SizedBox(height: 5),
+          Text(subtitle, style: TextStyle(fontSize: 14, color: Colors.black54))
+        ]),
+        margin: EdgeInsets.symmetric(horizontal: 15, vertical: 30));
   }
 }

@@ -2,7 +2,6 @@ import 'package:bizzfit/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../utils.dart';
-import '../api.dart';
 
 class CreateMentalState extends StatefulWidget {
   static const title = 'How are your feeling?';

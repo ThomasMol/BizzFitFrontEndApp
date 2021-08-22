@@ -1,9 +1,5 @@
-import 'package:bizzfit/api.dart';
 import 'package:flutter/cupertino.dart';
-import '../widgets/navigation_bar.dart';
-import '../api.dart';
 import 'package:flutter/material.dart';
-import '../utils.dart';
 
 class InsightsTab extends StatefulWidget {
   static const title = 'Insights';
@@ -32,11 +28,18 @@ class _InsightsTabState extends State<InsightsTab> {
     futureInsights = fetchFutureInsights();
   }
 
+  void refreshData() {
+    setState(() {
+      futureInsights = fetchFutureInsights();
+    });
+  }
+
   Future fetchFutureInsights() async {
-    var response = await CallApi().getRequest(null, '/insights/get');
+    // TODO get insights from supabase
+    /* var response = await CallApi().getRequest(null, '/insights/get');
     if (response['status'] == 'Success') {
       return response['data'];
-    }
+    } */
   }
 
   @override
@@ -169,12 +172,6 @@ class _InsightsTabState extends State<InsightsTab> {
         builderInsights,
       ],
     ));
-  }
-
-  void refreshData() {
-    setState(() {
-      futureInsights = fetchFutureInsights();
-    });
   }
 
   Widget moodCounts(dynamic data) {
