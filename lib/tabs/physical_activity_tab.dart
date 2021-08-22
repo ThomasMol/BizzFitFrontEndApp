@@ -15,31 +15,22 @@ class PhysicalActivityTab extends StatefulWidget {
 }
 
 class _PhysicalActivityTabState extends State<PhysicalActivityTab> {
+  
   Future<List<dynamic>> futureActivityWeek;
-  List<String> weekDates;
-  List<String> weekDatesDisplay;
-
   final secureStorage = FlutterSecureStorage();
-  bool stravaAuthenticated = false;
   StravaApi stravaApi = StravaApi();
 
   @override
   void initState() {
     super.initState();
-    futureActivityWeek = fetchActivitiesWeek();
-    weekDates = Utils.generateListDates('yyyy-MM-dd', 5);
-    weekDatesDisplay = Utils.generateListDates('E d MMMM', 5);
-    stravaAuthenticated =
-        secureStorage.read(key: 'strava_authenticated') != null;
+    futureActivityWeek = fetchActivitiesWeek();   
+    fetchStravaActivities(); 
   }
 
   void reloadData() {
     setState(() {
-      futureActivityWeek = fetchActivitiesWeek();
-      weekDates = Utils.generateListDates('yyyy-MM-dd', 5);
-      weekDatesDisplay = Utils.generateListDates('E d MMMM', 5);
+      futureActivityWeek = fetchActivitiesWeek();      
     });
-    fetchStravaActivities();
   }
 
   Future<List<dynamic>> fetchActivitiesWeek() async {
@@ -59,8 +50,10 @@ class _PhysicalActivityTabState extends State<PhysicalActivityTab> {
 
   // Function that will fetch strava activities if user is connected with strava
   // TODO check when last time it was updated, so duplicates cannot happen
+  // Checking with last_retrieved almost works: does not work when you remove strava api
+  // auth, so users can re auth their strava acc and keep loading their past activities  
   void fetchStravaActivities() async {
-    if (stravaAuthenticated) {
+    if (await secureStorage.read(key: 'strava_authenticated') != null) {
       var lastRetrieved =
           await secureStorage.read(key: 'strava_last_retrieved');
 
@@ -79,7 +72,7 @@ class _PhysicalActivityTabState extends State<PhysicalActivityTab> {
           StravaAthleteActivity stravaAthleteActivity =
               StravaAthleteActivity.fromJson(activity);
           final dbActivity = {
-            'user_id':supabase.auth.user().id,
+            'user_id': supabase.auth.user().id,
             'type': stravaAthleteActivity.type,
             'time': stravaAthleteActivity.movingTime,
             'date_time': stravaAthleteActivity.startDateLocal,
@@ -96,7 +89,7 @@ class _PhysicalActivityTabState extends State<PhysicalActivityTab> {
               .showSnackBar(SnackBar(content: Text(response.error.message)));
         } else {
           reloadData();
-        }       
+        }
       }
     }
   }
@@ -107,7 +100,7 @@ class _PhysicalActivityTabState extends State<PhysicalActivityTab> {
         future: futureActivityWeek,
         builder: (context, snapshot) {
           Widget activityListWidget;
-          if (snapshot.hasData) {
+          if (snapshot.hasData && snapshot.data.length > 0) {
             activityListWidget = SliverList(
                 delegate: SliverChildBuilderDelegate((context, index) {
               return ListTile(
@@ -117,11 +110,15 @@ class _PhysicalActivityTabState extends State<PhysicalActivityTab> {
                 trailing: Text(snapshot.data[index]['points'].toString()),
               );
             }, childCount: snapshot.data.length));
-          } else {
+          } else if (snapshot.hasData && snapshot.data.length == 0) {
             activityListWidget = SliverToBoxAdapter(
                 child: ListTile(
               title: Text('No data'),
             ));
+          } else {
+            activityListWidget = SliverToBoxAdapter(
+              child: CupertinoActivityIndicator(),
+            );
           }
 
           return activityListWidget;

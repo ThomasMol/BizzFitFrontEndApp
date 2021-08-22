@@ -34,12 +34,18 @@ class _MoodTabState extends State<MoodTab> {
   }
 
   void openCreateMoodPage() {
-    Navigator.of(context, rootNavigator: true).push<void>(
-      MaterialPageRoute(
-        fullscreenDialog: true,
-        builder: (context) => CreateMentalState(),
-      ),
-    );
+    Navigator.of(context, rootNavigator: true)
+        .push<void>(
+          MaterialPageRoute(
+            fullscreenDialog: true,
+            builder: (context) => CreateMentalState(),
+          ),
+        )
+        .then((value) => {
+              setState(() {
+                futureMoodWeek = fetchMoodsWeek();
+              })
+            });
   }
 
   Future<List<dynamic>> fetchMoodsWeek() async {
@@ -63,7 +69,7 @@ class _MoodTabState extends State<MoodTab> {
         future: futureMoodWeek,
         builder: (context, snapshot) {
           Widget activityListWidget;
-          if (snapshot.hasData) {
+          if (snapshot.hasData && snapshot.data.length > 0) {
             activityListWidget = SliverList(
                 delegate: SliverChildBuilderDelegate((context, index) {
               return ListTile(
@@ -73,11 +79,15 @@ class _MoodTabState extends State<MoodTab> {
                 trailing: Text(snapshot.data[index]['points'].toString()),
               );
             }, childCount: snapshot.data.length));
-          } else {
+          } else if (snapshot.hasData && snapshot.data.length == 0) {
             activityListWidget = SliverToBoxAdapter(
                 child: ListTile(
               title: Text('No data'),
             ));
+          } else {
+            activityListWidget = SliverToBoxAdapter(
+              child: CupertinoActivityIndicator(),
+            );
           }
 
           return activityListWidget;
@@ -95,7 +105,10 @@ class _MoodTabState extends State<MoodTab> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: openCreateMoodPage,
-        child: Icon(Icons.add),
+        child: Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
       ),
     ));
   }

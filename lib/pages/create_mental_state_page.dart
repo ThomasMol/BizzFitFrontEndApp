@@ -1,7 +1,6 @@
 import 'package:bizzfit/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../utils.dart';
 
 class CreateMentalState extends StatefulWidget {
   static const title = 'How are your feeling?';
@@ -49,10 +48,10 @@ class _CreateMentalStateState extends State<CreateMentalState> {
     });
 
     var data = {
-      'user_id':supabase.auth.user().id,
+      'user_id': supabase.auth.user().id,
       'date_time': _datePickerValue.toIso8601String(),
       'state': _moodValue,
-      'points':0
+      'points': 0
     };
 
     final response =
