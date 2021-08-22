@@ -15,9 +15,9 @@ class NavigationBar extends StatelessWidget {
     void openProfile() {
       Navigator.of(context, rootNavigator: true).push<void>(
         CupertinoPageRoute(
-          title: Profile.title,
+          title: ProfilePage.title,
           fullscreenDialog: true,
-          builder: (context) => Profile(),
+          builder: (context) => ProfilePage(),
         ),
       );
     }

@@ -33,6 +33,38 @@ class _HomeScreenState extends State<HomeScreen> {
     _title = FeedTab.title;
   }
 
+  void openProfile() {
+    Navigator.of(context, rootNavigator: true).push<void>(
+      MaterialPageRoute(
+        fullscreenDialog: true,
+        builder: (context) => ProfilePage(),
+      ),
+    );
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+      switch (index) {
+        case 0:
+          _title = FeedTab.title;
+          break;
+        case 1:
+          _title = RankingTab.title;
+          break;
+        case 2:
+          _title = PhysicalActivityTab.title;
+          break;
+        case 3:
+          _title = MoodTab.title;
+          break;
+        case 4:
+          _title = InsightsTab.title;
+          break;
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -85,169 +117,5 @@ class _HomeScreenState extends State<HomeScreen> {
           selectedFontSize: 12,
           type: BottomNavigationBarType.fixed,
         ));
-  }
-
-  Widget pageAdmin = CupertinoTabScaffold(
-    tabBar: CupertinoTabBar(
-      activeColor: CupertinoColors.activeOrange,
-      items: [
-        BottomNavigationBarItem(
-          label: FeedTab.title,
-          icon: FeedTab.icon,
-        ),
-        BottomNavigationBarItem(
-          label: RankingTab.title,
-          icon: RankingTab.icon,
-        ),
-        BottomNavigationBarItem(
-          label: PhysicalActivityTab.title,
-          icon: PhysicalActivityTab.icon,
-        ),
-        BottomNavigationBarItem(
-          label: MoodTab.title,
-          icon: MoodTab.icon,
-        ),
-        BottomNavigationBarItem(
-          label: InsightsTab.title,
-          icon: InsightsTab.icon,
-        ),
-        /* BottomNavigationBarItem(
-          label: ShopTab.title,
-          icon: ShopTab.icon,
-        ), */
-      ],
-    ),
-    tabBuilder: (context, index) {
-      switch (index) {
-        case 0:
-          return CupertinoTabView(
-            defaultTitle: FeedTab.title,
-            builder: (context) => FeedTab(),
-          );
-        case 1:
-          return CupertinoTabView(
-            defaultTitle: RankingTab.title,
-            builder: (context) => RankingTab(),
-          );
-        case 2:
-          return CupertinoTabView(
-            defaultTitle: PhysicalActivityTab.title,
-            builder: (context) => PhysicalActivityTab(),
-          );
-        case 3:
-          return CupertinoTabView(
-            defaultTitle: MoodTab.title,
-            builder: (context) => MoodTab(),
-          );
-        case 4:
-          return CupertinoTabView(
-            defaultTitle: InsightsTab.title,
-            builder: (context) => InsightsTab(),
-          );
-        /* case 4:
-          return CupertinoTabView(
-            defaultTitle: ShopTab.title,
-            builder: (context) => ShopTab(),
-          ); */
-
-        default:
-          assert(false, 'Unexpected tab');
-          return SizedBox.shrink();
-      }
-    },
-  );
-
-  Widget pageRegular = CupertinoTabScaffold(
-    tabBar: CupertinoTabBar(
-      activeColor: CupertinoColors.activeOrange,
-      items: [
-        BottomNavigationBarItem(
-          label: FeedTab.title,
-          icon: FeedTab.icon,
-        ),
-        BottomNavigationBarItem(
-          label: RankingTab.title,
-          icon: RankingTab.icon,
-        ),
-        BottomNavigationBarItem(
-          label: PhysicalActivityTab.title,
-          icon: PhysicalActivityTab.icon,
-        ),
-        BottomNavigationBarItem(
-          label: MoodTab.title,
-          icon: MoodTab.icon,
-        ),
-        /*  BottomNavigationBarItem(
-          label: ShopTab.title,
-          icon: ShopTab.icon,
-        ), */
-      ],
-    ),
-    tabBuilder: (context, index) {
-      switch (index) {
-        case 0:
-          return CupertinoTabView(
-            defaultTitle: FeedTab.title,
-            builder: (context) => FeedTab(),
-          );
-        case 1:
-          return CupertinoTabView(
-            defaultTitle: RankingTab.title,
-            builder: (context) => RankingTab(),
-          );
-        case 2:
-          return CupertinoTabView(
-            defaultTitle: PhysicalActivityTab.title,
-            builder: (context) => PhysicalActivityTab(),
-          );
-        case 3:
-          return CupertinoTabView(
-            defaultTitle: MoodTab.title,
-            builder: (context) => MoodTab(),
-          );
-        /*  case 3:
-          return CupertinoTabView(
-            defaultTitle: ShopTab.title,
-            builder: (context) => ShopTab(),
-          ); */
-
-        default:
-          assert(false, 'Unexpected tab');
-          return SizedBox.shrink();
-      }
-    },
-  );
-
-  void openProfile() {
-    Navigator.of(context, rootNavigator: true).push<void>(
-      CupertinoPageRoute(
-        title: Profile.title,
-        fullscreenDialog: true,
-        builder: (context) => Profile(),
-      ),
-    );
-  }
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-      switch (index) {
-        case 0:
-          _title = FeedTab.title;
-          break;
-        case 1:
-          _title = RankingTab.title;
-          break;
-        case 2:
-          _title = PhysicalActivityTab.title;
-          break;
-        case 3:
-          _title = MoodTab.title;
-          break;
-        case 4:
-          _title = InsightsTab.title;
-          break;
-      }
-    });
   }
 }

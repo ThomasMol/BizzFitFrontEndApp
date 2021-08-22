@@ -1,21 +1,23 @@
+import 'package:bizzfit/auth_required_state.dart';
 import 'package:bizzfit/constants.dart';
 import 'package:bizzfit/fitness_apis/fitbit/api.dart';
 import 'package:bizzfit/fitness_apis/strava/api.dart';
+import 'package:bizzfit/models/profile.dart';
 import 'package:bizzfit/pages/authentication/login_page.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
-class Profile extends StatefulWidget {
+class ProfilePage extends StatefulWidget {
   static const title = 'Profile';
   static const icon = Icon(CupertinoIcons.person_fill);
 
   @override
-  _ProfileState createState() => _ProfileState();
+  _ProfilePageState createState() => _ProfilePageState();
 }
 
-class _ProfileState extends State<Profile> {
-  Future<dynamic> futureProfile;
+class _ProfilePageState extends AuthRequiredState<ProfilePage> {
+  Future<Profile> futureProfile;
   final secureStorage = FlutterSecureStorage();
   bool stravaAuthenticated = false;
   StravaApi stravaApi = StravaApi();
@@ -30,8 +32,60 @@ class _ProfileState extends State<Profile> {
   }
 
   @override
+  void onUnauthenticated() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => LoginPage()),
+    );
+  }
+
+  Future<Profile> fetchProfile() async {
+    String userId = supabase.auth.user().id;
+    final response = await supabase
+        .from('profiles')
+        .select()
+        .eq('id', userId)
+        .limit(1)
+        .single()
+        .execute();
+    if (response.error != null && response.status != 406) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(response.error.message)));
+      return null;
+    } else {
+      return Profile.fromJson(response.data);
+    }
+  }
+
+  void reloadData() {
+    setState(() {
+      futureProfile = fetchProfile();
+    });
+  }
+
+  void _logOut() async {
+    FlutterSecureStorage storage = FlutterSecureStorage();
+    final response = await supabase.auth.signOut();
+    if (response.error != null) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(response.error.message),
+        backgroundColor: Colors.red,
+      ));
+    } else {
+      await storage.delete(key: 'permission_level');
+      if (stravaAuthenticated) {
+        stravaApi.removeAuth();
+      }
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => LoginPage()),
+      );
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final builderProfile = FutureBuilder<dynamic>(
+    final builderProfile = FutureBuilder<Profile>(
         future: futureProfile,
         builder: (context, snapshot) {
           Widget newsListSliver;
@@ -42,16 +96,14 @@ class _ProfileState extends State<Profile> {
                 height: 120,
               ),
               Padding(padding: EdgeInsets.symmetric(vertical: 10)),
-              Text(snapshot.data['first_name'] +
-                  ' ' +
-                  snapshot.data['last_name']),
+              Text('${snapshot.data.firstName} ${snapshot.data.lastName}'),
               Padding(padding: EdgeInsets.symmetric(vertical: 20)),
               const Divider(
                 height: 2.0,
               ),
               ListTile(
                 leading: Icon(CupertinoIcons.list_number),
-                title: Text(snapshot.data['score'].toString()),
+                title: Text(snapshot.data.score.toString()),
                 subtitle: Text('points'),
               ),
               const Divider(
@@ -59,7 +111,7 @@ class _ProfileState extends State<Profile> {
               ),
               ListTile(
                 leading: Icon(CupertinoIcons.briefcase_fill),
-                title: Text(snapshot.data['org_name'].toString()),
+                title: Text(snapshot.data.organizationId),
                 subtitle: Text('Organization'),
               ),
               const Divider(
@@ -67,7 +119,7 @@ class _ProfileState extends State<Profile> {
               ),
               ListTile(
                 leading: Icon(CupertinoIcons.list_number),
-                title: Text(snapshot.data['org_score'].toString()),
+                title: Text(snapshot.data.score.toString()),
                 subtitle: Text('Your organization\'s score'),
               ),
               const Divider(
@@ -118,14 +170,13 @@ class _ProfileState extends State<Profile> {
           return newsListSliver;
         });
 
-    return CupertinoPageScaffold(
-        navigationBar: CupertinoNavigationBar(),
-        child: SafeArea(
+    return Scaffold(
+        appBar: CupertinoNavigationBar(),
+        body: SafeArea(
             child: Material(
                 child: ListView(
           children: [
             builderProfile,
-            Spacer(),
             ListTile(
               title: Text('Logout'),
               onTap: _logOut,
@@ -135,52 +186,5 @@ class _ProfileState extends State<Profile> {
             ),
           ],
         ))));
-  }
-
-  Future<dynamic> fetchProfile() async {
-    String userId = supabase.auth.user().id;
-    final response = await supabase
-        .from('profiles')
-        .select()
-        .eq('id', userId)
-        .limit(1)
-        .single()
-        .execute();
-    print(response.data);
-    if (response.error != null && response.status != 406) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(response.error.message)));
-      return null;
-    } else {
-      return response.data;
-    }
-  }
-
-  void reloadData() {
-    setState(() {
-      futureProfile = fetchProfile();
-    });
-  }
-
-  void _logOut() async {
-    FlutterSecureStorage storage = FlutterSecureStorage();
-    final response = await supabase.auth.signOut();
-
-    if (response.error != null) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(response.error.message),
-        backgroundColor: Colors.red,
-      ));
-    } else {
-      await storage.delete(key: 'access_token');
-      await storage.delete(key: 'permission_level');
-      if (stravaAuthenticated) {
-        stravaApi.removeAuth();
-      }
-      Navigator.pushAndRemoveUntil(
-          context,
-          CupertinoPageRoute(builder: (context) => LoginPage()),
-          (Route<dynamic> route) => false);
-    }
   }
 }
