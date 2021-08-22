@@ -22,18 +22,24 @@ class StravaApi {
   }
 
   void storeAuth() async {
-    http.Response response =
-        await oAuth2Helper.get('https://www.strava.com/api/v3/athlete');
+    http.Response response = await oAuth2Helper
+        .get('https://www.strava.com/api/v3/athlete')
+        .catchError((onError) {
+      print(onError);
+    });
     if (response.statusCode == 200) {
       final secureStorage = FlutterSecureStorage();
       // subtract duration days: 200 or more to test retrieving data
-      int setLastRetrieved = (DateTime.now().millisecondsSinceEpoch / 1000).floor();
-      secureStorage.write(
+      int setLastRetrieved = (DateTime.now()
+                  .subtract(const Duration(days: 21))
+                  .millisecondsSinceEpoch /
+              1000)
+          .floor();
+      await secureStorage.write(
           key: 'strava_authenticated',
           value: jsonDecode(response.body)['id'].toString());
-      secureStorage.write(
-          key: 'strava_last_retrieved',
-          value: setLastRetrieved.toString());
+      await secureStorage.write(
+          key: 'strava_last_retrieved', value: setLastRetrieved.toString());
     } else {
       removeAuth();
     }

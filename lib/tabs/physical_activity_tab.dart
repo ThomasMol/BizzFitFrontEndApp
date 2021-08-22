@@ -1,6 +1,7 @@
 import 'package:bizzfit/api.dart';
 import 'package:bizzfit/constants.dart';
 import 'package:bizzfit/fitness_apis/strava/api.dart';
+import 'package:bizzfit/models/strava_athlete_activity.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -33,6 +34,74 @@ class _PhysicalActivityTabState extends State<PhysicalActivityTab> {
         secureStorage.read(key: 'strava_authenticated') != null;
   }
 
+  void reloadData() {
+    setState(() {
+      futureActivityWeek = fetchActivitiesWeek();
+      weekDates = Utils.generateListDates('yyyy-MM-dd', 5);
+      weekDatesDisplay = Utils.generateListDates('E d MMMM', 5);
+    });
+    fetchStravaActivities();
+  }
+
+  Future<List<dynamic>> fetchActivitiesWeek() async {
+    final response = await supabase
+        .from('physical_activities')
+        .select()
+        .order('date_time')
+        .execute();
+    if (response.error != null && response.status != 406) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(response.error.message)));
+      return null;
+    } else {
+      return response.data;
+    }
+  }
+
+  // Function that will fetch strava activities if user is connected with strava
+  // TODO check when last time it was updated, so duplicates cannot happen
+  void fetchStravaActivities() async {
+    if (stravaAuthenticated) {
+      var lastRetrieved =
+          await secureStorage.read(key: 'strava_last_retrieved');
+
+      var activities =
+          await stravaApi.getData('athlete/activities?after=' + lastRetrieved);
+
+      int newLastRetrieved =
+          (DateTime.now().millisecondsSinceEpoch / 1000).floor();
+
+      await secureStorage.write(
+          key: 'strava_last_retrieved', value: newLastRetrieved.toString());
+
+      if (activities.length > 0) {
+        List<dynamic> dbActivities = [];
+        for (var activity in activities) {
+          StravaAthleteActivity stravaAthleteActivity =
+              StravaAthleteActivity.fromJson(activity);
+          final dbActivity = {
+            'user_id':supabase.auth.user().id,
+            'type': stravaAthleteActivity.type,
+            'time': stravaAthleteActivity.movingTime,
+            'date_time': stravaAthleteActivity.startDateLocal,
+            'points': 0
+          };
+          dbActivities.add(dbActivity);
+        }
+        final response = await supabase
+            .from('physical_activities')
+            .insert(dbActivities)
+            .execute();
+        if (response.error != null && response.status != 406) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text(response.error.message)));
+        } else {
+          reloadData();
+        }       
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final activityBuilder = FutureBuilder<List<dynamic>>(
@@ -60,7 +129,7 @@ class _PhysicalActivityTabState extends State<PhysicalActivityTab> {
         });
 
     return SafeArea(
-        child:CustomScrollView(
+      child: CustomScrollView(
         slivers: [
           CupertinoSliverRefreshControl(onRefresh: () async {
             reloadData();
@@ -69,56 +138,5 @@ class _PhysicalActivityTabState extends State<PhysicalActivityTab> {
         ],
       ),
     );
-  }
-
-  void reloadData() {
-    setState(() {
-      futureActivityWeek = fetchActivitiesWeek();
-      weekDates = Utils.generateListDates('yyyy-MM-dd', 5);
-      weekDatesDisplay = Utils.generateListDates('E d MMMM', 5);
-    });
-    fetchStravaActivities();
-  }
-
-  Future<List<dynamic>> fetchActivitiesWeek() async {
-    final response = await supabase
-        .from('physical_activities')
-        .select()
-        .order('date_time')
-        .execute();
-    if (response.error != null && response.status != 406) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(response.error.message)));
-      return null;
-    } else {
-      return response.data;
-    }
-  }
-
-  // Function that will fetch strava activities if user is connected with strava
-  // TODO check when last time it was updated, so duplicates cannot happen
-  fetchStravaActivities() async {
-    if (await secureStorage.read(key: 'strava_authenticated') != null) {
-      var lastRetrieved =
-          await secureStorage.read(key: 'strava_last_retrieved');
-      var activities =
-          await stravaApi.getData('athlete/activities?after=' + lastRetrieved);
-      int newLastRetrieved =
-          (DateTime.now().millisecondsSinceEpoch / 1000).floor();
-      await secureStorage.write(
-          key: 'strava_last_retrieved', value: newLastRetrieved.toString());
-      if (activities.length > 0) {
-        for (var activity in activities) {
-          var activityData = {
-            'type': activity['type'],
-            'time': activity['moving_time'],
-            'date_time': activity['start_date_local'],
-            'fitness_api_id': 'strava'
-          };
-          var response =
-              await CallApi().postRequest(activityData, '/physicalactivities');
-        }
-      }
-    }
   }
 }
