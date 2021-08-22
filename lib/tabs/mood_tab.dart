@@ -1,5 +1,6 @@
 import 'package:bizzfit/api.dart';
 import 'package:bizzfit/constants.dart';
+import 'package:bizzfit/pages/create_mental_state_page.dart';
 import 'package:bizzfit/widgets/navigation_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +24,39 @@ class _MoodTabState extends State<MoodTab> {
     super.initState();
     futureMoodWeek = fetchMoodsWeek();
     weekDates = Utils.generateListDates('yyyy-MM-dd', 5);
-    weekDatesDisplay = Utils.generateListDates('E d MMMM', 5);   
+    weekDatesDisplay = Utils.generateListDates('E d MMMM', 5);
+  }
+
+  void reloadData() {
+    setState(() {
+      futureMoodWeek = fetchMoodsWeek();
+      weekDates = Utils.generateListDates('yyyy-MM-dd', 5);
+      weekDatesDisplay = Utils.generateListDates('E d MMMM', 5);
+    });
+  }
+
+  void openCreateMoodPage() {
+    Navigator.of(context, rootNavigator: true).push<void>(
+      MaterialPageRoute(
+        fullscreenDialog: true,
+        builder: (context) => CreateMentalState(),
+      ),
+    );
+  }
+
+  Future<List<dynamic>> fetchMoodsWeek() async {
+    final response = await supabase
+        .from('mental_states')
+        .select()
+        .order('date_time')
+        .execute();
+    if (response.error != null && response.status != 406) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(response.error.message)));
+      return null;
+    } else {
+      return response.data;
+    }
   }
 
   @override
@@ -53,7 +86,8 @@ class _MoodTabState extends State<MoodTab> {
         });
 
     return SafeArea(
-        child: CustomScrollView(
+        child: Scaffold(
+      body: CustomScrollView(
         slivers: [
           CupertinoSliverRefreshControl(onRefresh: () async {
             reloadData();
@@ -61,30 +95,7 @@ class _MoodTabState extends State<MoodTab> {
           moodBuilder
         ],
       ),
-    );
+      floatingActionButton: FloatingActionButton(onPressed: openCreateMoodPage, child: Icon(Icons.add),),
+    ));
   }
-
-  void reloadData() {
-    setState(() {
-      futureMoodWeek = fetchMoodsWeek();
-      weekDates = Utils.generateListDates('yyyy-MM-dd', 5);
-      weekDatesDisplay = Utils.generateListDates('E d MMMM', 5);
-    });
-  }
-
-  Future<List<dynamic>> fetchMoodsWeek() async {
-    final response = await supabase
-        .from('mental_states')
-        .select()
-        .order('date_time')
-        .execute();
-    if (response.error != null && response.status != 406) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(response.error.message)));
-      return null;
-    } else {
-      return response.data;
-    }
-  }
-  
 }

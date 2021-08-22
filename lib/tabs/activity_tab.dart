@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../widgets/navigation_bar.dart';
 import '../activities/create_physical_activity_page.dart';
-import '../activities/create_mental_state_page.dart';
+import '../pages/create_mental_state_page.dart';
 import '../api.dart';
 import 'package:intl/intl.dart';
 
