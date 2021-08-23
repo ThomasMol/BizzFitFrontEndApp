@@ -3,6 +3,8 @@ import 'package:bizzfit/pages/authentication/register_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../home_page.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class LoginPage extends StatefulWidget {
   @override
@@ -36,7 +38,7 @@ class _LoginPageState extends State<StatefulWidget> {
             )),
         Padding(
             padding: EdgeInsets.fromLTRB(50, 50, 50, 10),
-            child: Text('Login with your credentials')),
+            child: Text(AppLocalizations.of(context).loginPageText)),
         Padding(
             padding: EdgeInsets.symmetric(vertical: 10, horizontal: 50),
             child: CupertinoTextField(

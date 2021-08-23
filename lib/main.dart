@@ -1,7 +1,9 @@
 import 'package:bizzfit/pages/splash_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,10 +33,12 @@ class _MyAppState extends State<MyApp> {
         home: SplashPage(),
         title: 'BizzFit',
         localizationsDelegates: [
-          DefaultMaterialLocalizations.delegate,
-          DefaultCupertinoLocalizations.delegate,
-          DefaultWidgetsLocalizations.delegate,
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
         ],
+        supportedLocales: AppLocalizations.supportedLocales,
         theme: ThemeData(
             primaryColor: Colors.white,
             accentColor: Colors.orangeAccent,
