@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'package:bizzfit/constants.dart';
 import 'package:bizzfit/fitness_apis/strava/strava_oauth2_client.dart';
+import 'package:bizzfit/models/strava_athlete_activity.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:oauth2_client/oauth2_helper.dart';
 import 'package:http/http.dart' as http;
@@ -40,6 +42,7 @@ class StravaApi {
           value: jsonDecode(response.body)['id'].toString());
       await secureStorage.write(
           key: 'strava_last_retrieved', value: setLastRetrieved.toString());
+      fetchStravaActivities();
     } else {
       removeAuth();
     }
@@ -58,6 +61,44 @@ class StravaApi {
       return jsonDecode(response.body);
     } else {
       return null;
+    }
+  }
+
+  // Function that will fetch strava activities if user is connected with strava
+  // TODO check when last time it was updated, so duplicates cannot happen
+  // Checking with last_retrieved almost works: does not work when you remove strava api
+  // auth, so users can re auth their strava acc and keep loading their past activities
+  void fetchStravaActivities() async {
+    var lastRetrieved = await secureStorage.read(key: 'strava_last_retrieved');
+
+    var activities = await getData('athlete/activities?after=' + lastRetrieved);
+
+    int newLastRetrieved =
+        (DateTime.now().millisecondsSinceEpoch / 1000).floor();
+
+    await secureStorage.write(
+        key: 'strava_last_retrieved', value: newLastRetrieved.toString());
+
+    if (activities.length > 0) {
+      List<dynamic> dbActivities = [];
+      for (var activity in activities) {
+        StravaAthleteActivity stravaAthleteActivity =
+            StravaAthleteActivity.fromJson(activity);
+        final dbActivity = {
+          'user_id': supabase.auth.user().id,
+          'type': stravaAthleteActivity.type,
+          'time': stravaAthleteActivity.movingTime,
+          'date_time': stravaAthleteActivity.startDateLocal,
+          'points': 0
+        };
+        dbActivities.add(dbActivity);
+      }
+      final response = await supabase
+          .from('physical_activities')
+          .insert(dbActivities)
+          .execute();
+      if (response.error != null && response.status != 406) {
+      } else {}
     }
   }
 }

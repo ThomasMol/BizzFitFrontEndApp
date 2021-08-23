@@ -1,10 +1,9 @@
 import 'package:bizzfit/constants.dart';
+import 'package:bizzfit/fitness_apis/fitbit/api.dart';
 import 'package:bizzfit/fitness_apis/strava/api.dart';
-import 'package:bizzfit/models/strava_athlete_activity.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import '../utils.dart';
 
 class PhysicalActivityTab extends StatefulWidget {
   static const title = 'Activities';
@@ -15,22 +14,30 @@ class PhysicalActivityTab extends StatefulWidget {
 }
 
 class _PhysicalActivityTabState extends State<PhysicalActivityTab> {
-  
   Future<List<dynamic>> futureActivityWeek;
   final secureStorage = FlutterSecureStorage();
-  StravaApi stravaApi = StravaApi();
 
   @override
   void initState() {
     super.initState();
-    futureActivityWeek = fetchActivitiesWeek();   
-    fetchStravaActivities(); 
+    fetchFitnessApiActivities();
+    futureActivityWeek = fetchActivitiesWeek();
   }
 
   void reloadData() {
+    fetchFitnessApiActivities();
     setState(() {
-      futureActivityWeek = fetchActivitiesWeek();      
+      futureActivityWeek = fetchActivitiesWeek();
     });
+  }
+
+  void fetchFitnessApiActivities() async {
+    if (await secureStorage.read(key: 'fitbit_authenticated') != null) {
+      FitbitApi().fetchNewActivitiesAndStore();
+    }
+    if (await secureStorage.read(key: 'strava_authenticated') != null) {
+      StravaApi().fetchStravaActivities();
+    }
   }
 
   Future<List<dynamic>> fetchActivitiesWeek() async {
@@ -45,52 +52,6 @@ class _PhysicalActivityTabState extends State<PhysicalActivityTab> {
       return null;
     } else {
       return response.data;
-    }
-  }
-
-  // Function that will fetch strava activities if user is connected with strava
-  // TODO check when last time it was updated, so duplicates cannot happen
-  // Checking with last_retrieved almost works: does not work when you remove strava api
-  // auth, so users can re auth their strava acc and keep loading their past activities  
-  void fetchStravaActivities() async {
-    if (await secureStorage.read(key: 'strava_authenticated') != null) {
-      var lastRetrieved =
-          await secureStorage.read(key: 'strava_last_retrieved');
-
-      var activities =
-          await stravaApi.getData('athlete/activities?after=' + lastRetrieved);
-
-      int newLastRetrieved =
-          (DateTime.now().millisecondsSinceEpoch / 1000).floor();
-
-      await secureStorage.write(
-          key: 'strava_last_retrieved', value: newLastRetrieved.toString());
-
-      if (activities.length > 0) {
-        List<dynamic> dbActivities = [];
-        for (var activity in activities) {
-          StravaAthleteActivity stravaAthleteActivity =
-              StravaAthleteActivity.fromJson(activity);
-          final dbActivity = {
-            'user_id': supabase.auth.user().id,
-            'type': stravaAthleteActivity.type,
-            'time': stravaAthleteActivity.movingTime,
-            'date_time': stravaAthleteActivity.startDateLocal,
-            'points': 0
-          };
-          dbActivities.add(dbActivity);
-        }
-        final response = await supabase
-            .from('physical_activities')
-            .insert(dbActivities)
-            .execute();
-        if (response.error != null && response.status != 406) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text(response.error.message)));
-        } else {
-          reloadData();
-        }
-      }
     }
   }
 
