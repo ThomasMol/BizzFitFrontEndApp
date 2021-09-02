@@ -3,6 +3,7 @@ import 'package:bizzfit/pages/authentication/login_page.dart';
 import 'package:bizzfit/pages/home_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:supabase/supabase.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -151,14 +152,17 @@ class _RegisterPageState extends State<StatefulWidget> {
   }
 
   void _insertProfile() async {
-    final updates = {
+    final data = {
       'id': supabase.auth.currentUser.id,
       'first_name': _firstNameController.text,
       'last_name': _lastNameController.text,
       'organization_id': _selectedOrganization
     };
-    final response = await supabase.from('profiles').upsert(updates).execute();
-
+    final response = await supabase
+        .from('profiles')
+        .insert(data, returning: ReturningOption.minimal)
+        .execute();
+    
     if (response.error != null) {
       print(response.error.message);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(

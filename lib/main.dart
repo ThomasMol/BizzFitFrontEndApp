@@ -8,9 +8,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Supabase.initialize(
-    url: 'https://yqewjyiksmtrmdpbvjtx.supabase.co',
+    url: 'https://najmocrkpfatcufsfwuq.supabase.co',
     anonKey:
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTYyODkzODcxNSwiZXhwIjoxOTQ0NTE0NzE1fQ.MmnlfZcxFflPALmQ7EoFoeJ7fBmhsp1h7sJ_SmAhGus',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTYzMDU5Mjc0MSwiZXhwIjoxOTQ2MTY4NzQxfQ.qv7lyYb1UK4RjtToPzOiY8n6svcPtKAX_GsvOpZnFAs',
   );
   runApp(MyApp());
 }
@@ -26,7 +26,8 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
   }
-
+ 
+  
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

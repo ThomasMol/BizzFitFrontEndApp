@@ -91,13 +91,14 @@ class _ProfilePageState extends AuthRequiredState<ProfilePage> {
           Widget newsListSliver;
           if (snapshot.hasData) {
             newsListSliver = Column(children: [
+              Padding(padding: EdgeInsets.symmetric(vertical: 5)),
               Image(
                 image: AssetImage('assets/profile.png'),
-                height: 120,
+                height: 80,
               ),
-              Padding(padding: EdgeInsets.symmetric(vertical: 10)),
+              Padding(padding: EdgeInsets.symmetric(vertical: 5)),
               Text('${snapshot.data.firstName} ${snapshot.data.lastName}'),
-              Padding(padding: EdgeInsets.symmetric(vertical: 20)),
+              Padding(padding: EdgeInsets.symmetric(vertical: 10)),
               const Divider(
                 height: 2.0,
               ),
@@ -105,23 +106,7 @@ class _ProfilePageState extends AuthRequiredState<ProfilePage> {
                 leading: Icon(CupertinoIcons.list_number),
                 title: Text(snapshot.data.score.toString()),
                 subtitle: Text('points'),
-              ),
-              const Divider(
-                height: 2.0,
-              ),
-              ListTile(
-                leading: Icon(CupertinoIcons.briefcase_fill),
-                title: Text(snapshot.data.organizationId),
-                subtitle: Text('Organization'),
-              ),
-              const Divider(
-                height: 2.0,
-              ),
-              ListTile(
-                leading: Icon(CupertinoIcons.list_number),
-                title: Text(snapshot.data.score.toString()),
-                subtitle: Text('Your organization\'s score'),
-              ),
+              ),              
               const Divider(
                 height: 2.0,
               ),

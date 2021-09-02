@@ -1,6 +1,6 @@
+import 'package:bizzfit/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../utils.dart';
 
 class FeedTab extends StatefulWidget {
   static const title = 'Feed';
@@ -13,61 +13,27 @@ class FeedTab extends StatefulWidget {
 class _FeedTabState extends State<FeedTab> {
   TextEditingController _textController;
 
-  Widget sideScrollCard(AssetImage image, String title, String subtitle) {
-    return Card(
-        elevation: 2,
-        clipBehavior: Clip.antiAliasWithSaveLayer,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-        child: Column(children: [
-          Image(
-            image: image,
-            height: 100,
-          ),
-          SizedBox(height: 15),
-          Text(
-            title,
-            style: TextStyle(fontSize: 18),
-          ),
-          SizedBox(height: 5),
-          Text(subtitle, style: TextStyle(fontSize: 14, color: Colors.black54))
-        ]),
-        margin: EdgeInsets.symmetric(horizontal: 15, vertical: 30));
+  @override
+  void initState() {
+    super.initState();
+    fetchCoworkerActivites();
   }
 
-  Widget fullImageCard(AssetImage image, String title, String subtitle) {
-    return Card(
-        elevation: 2,
-        clipBehavior: Clip.antiAliasWithSaveLayer,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-        child: Stack(children: [
-          Image(
-            image: image,
-            width: MediaQuery.of(context).size.width,
-          ),
-          Padding(
-              padding: EdgeInsets.fromLTRB(20, 170, 20, 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                        fontSize: 30,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 5),
-                  Text(subtitle,
-                      style: TextStyle(
-                          fontSize: 22,
-                          color: Colors.white70,
-                          fontWeight: FontWeight.bold))
-                ],
-              ))
-        ]),
-        margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20));
+  Future<List<dynamic>> fetchCoworkerActivites() async {
+    final response = await supabase
+        .from('physical_activities')
+        .select()
+        .order('date_time')
+        .limit(12)
+        .execute();
+    if (response.error != null && response.status != 406) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(response.error.message)));
+      return null;
+    } else {
+
+      print(response.data.length);
+    }
   }
 
   @override
@@ -168,5 +134,62 @@ class _FeedTabState extends State<FeedTab> {
         ),
       ],
     );
+  }
+
+  Widget sideScrollCard(AssetImage image, String title, String subtitle) {
+    return Card(
+        elevation: 2,
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+        child: Column(children: [
+          Image(
+            image: image,
+            height: 100,
+          ),
+          SizedBox(height: 15),
+          Text(
+            title,
+            style: TextStyle(fontSize: 18),
+          ),
+          SizedBox(height: 5),
+          Text(subtitle, style: TextStyle(fontSize: 14, color: Colors.black54))
+        ]),
+        margin: EdgeInsets.symmetric(horizontal: 15, vertical: 30));
+  }
+
+  Widget fullImageCard(AssetImage image, String title, String subtitle) {
+    return Card(
+        elevation: 2,
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+        child: Stack(children: [
+          Image(
+            image: image,
+            width: MediaQuery.of(context).size.width,
+          ),
+          Padding(
+              padding: EdgeInsets.fromLTRB(20, 170, 20, 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                        fontSize: 30,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 5),
+                  Text(subtitle,
+                      style: TextStyle(
+                          fontSize: 22,
+                          color: Colors.white70,
+                          fontWeight: FontWeight.bold))
+                ],
+              ))
+        ]),
+        margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20));
   }
 }
